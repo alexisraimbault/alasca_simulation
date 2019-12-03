@@ -1,0 +1,12 @@
+Pour exécuter le projet en multi JVM, 
+se placer dans le répertoire ./morse_execution
+ouvrir 5 terminaux et entrer les commandes suivantes, chacune dans un terminal, et dans l'ordre :
+
+1 : ./start-cyclicbarrier
+2 : ./start-gregistry
+3 : ./start-dcvm jvm-1
+4 : ./start-dcvm jvm-2
+5 : ./start-dcvm jvm-3
+
+les différents composants de la maison seront créés dynamiquement par le composant HouseDeploy,
+chacun dans la JVM qui lui aura été attribuée grâce à un tableau donné en paramètre de constructeur.

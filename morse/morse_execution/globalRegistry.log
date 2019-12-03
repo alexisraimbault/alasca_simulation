@@ -1,0 +1,48 @@
+1574020544219|Registry up and running!
+1574020592597|GlobalRegistry processing put deploy-uri rmi=localhost
+1574020593627|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionI-8830ae9e-98bf-45f3-a049-10406c3adb2c rmi=localhost
+1574020593638|All connected!
+1574020593638|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionI-c4a515ac-7171-41e1-bb2a-d0627a14d177 rmi=localhost
+1574020593939|GlobalRegistry processing put jvm-2-dcc rmi=localhost
+1574020593958|GlobalRegistry processing put jvm-3-dcc rmi=localhost
+1574020594787|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionI-d3a59161-a361-4cd8-9393-6a822523f36d rmi=localhost
+1574020594897|GlobalRegistry processing put jvm-1-dcc rmi=localhost
+1574020595505|GlobalRegistry processing put controller-uri rmi=localhost
+1574020595597|GlobalRegistry processing put controller-launch rmi=localhost
+1574020595653|GlobalRegistry processing lookup jvm-2-dcc
+1574020595785|GlobalRegistry processing put fridge-uri rmi=localhost
+1574020595965|GlobalRegistry processing put fridge-launch rmi=localhost
+1574020596137|GlobalRegistry processing put iport rmi=localhost
+1574020596261|GlobalRegistry processing put fridge-ep-uri rmi=localhost
+1574020596341|GlobalRegistry processing lookup jvm-3-dcc
+1574020596434|GlobalRegistry processing put heater-uri rmi=localhost
+1574020596549|GlobalRegistry processing put heater-launch rmi=localhost
+1574020596717|GlobalRegistry processing put heater-iport rmi=localhost
+1574020596805|GlobalRegistry processing put heater-ep-uri rmi=localhost
+1574020596858|GlobalRegistry processing lookup jvm-3-dcc
+1574020596929|GlobalRegistry processing put sp-uri rmi=localhost
+1574020596994|GlobalRegistry processing put sp-launch rmi=localhost
+1574020597098|GlobalRegistry processing put ondulator-uri rmi=localhost
+1574020597150|GlobalRegistry processing put ondulator-launch rmi=localhost
+1574020597250|GlobalRegistry processing put ondulator-oport rmi=localhost
+1574020597341|GlobalRegistry processing put battery-uri rmi=localhost
+1574020597433|GlobalRegistry processing put battery-launch rmi=localhost
+1574020597541|GlobalRegistry processing put battery-iport rmi=localhost
+1574020597633|GlobalRegistry processing put ep-uri rmi=localhost
+1574020597722|GlobalRegistry processing put ep-launch rmi=localhost
+1574020597842|GlobalRegistry processing put ep-iport rmi=localhost
+1574020598057|GlobalRegistry processing lookup iport
+1574020598114|GlobalRegistry processing lookup heater-iport
+1574020598233|GlobalRegistry processing lookup sp-uri
+1574020599633|GlobalRegistry processing lookup ondulator-oport
+1574020600065|GlobalRegistry processing lookup heater-uri
+1574020600234|GlobalRegistry processing lookup ep-iport
+1574020600346|GlobalRegistry processing lookup fridge-uri
+1574020601793|GlobalRegistry processing lookup ep-iport
+1574020602385|GlobalRegistry processing lookup fridge-launch
+1574020602453|GlobalRegistry processing lookup heater-launch
+1574020602549|GlobalRegistry processing lookup sp-launch
+1574020613770|GlobalRegistry processing null
+1574020615290|GlobalRegistry processing null
+1574020616949|GlobalRegistry processing null
+1574020616954|Global registry shuts down!
