@@ -269,6 +269,11 @@ extends		AtomicHIOAwithEquations
 		return this.currentState ;
 	}
 	
+	public Mode		getMode()
+	{
+		return this.currentMode ;
+	}
+	
 	public void autoControll()
 	{
 		if(this.currentMode == Mode.REST)
@@ -296,7 +301,7 @@ extends		AtomicHIOAwithEquations
 				currentTemp.v += ((3 - currentTemp.v)/13);
 			else
 			{
-				currentTemp.v += ((3 - outsideTemperature)/13);
+				currentTemp.v += ((outsideTemperature - currentTemp.v)/17);
 				currentTemp.v += ((3 - currentTemp.v)/13);
 			}
 		}
@@ -306,7 +311,7 @@ extends		AtomicHIOAwithEquations
 				currentTemp.v += ((-3 - currentTemp.v)/13);
 			else
 			{
-				currentTemp.v += ((3 - outsideTemperature)/13);
+				currentTemp.v += ((outsideTemperature - currentTemp.v)/17);
 				currentTemp.v += ((-3 - currentTemp.v)/13);
 			}
 				

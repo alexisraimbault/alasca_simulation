@@ -21,8 +21,13 @@ extends		AtomicSimulatorPlugin
 		if (name.equals("state")) {
 			return ((FridgeModel)m).getState() ;
 		} else {
-			assert	name.equals("temperature") ;
-			return ((FridgeModel)m).getTemp() ;
+			if(name.equals("mode")) {
+				return ((FridgeModel)m).getMode() ;
+			}else
+			{
+				assert	name.equals("temperature") ;
+				return ((FridgeModel)m).getTemp() ;
+			}
 		}
 	}
 }

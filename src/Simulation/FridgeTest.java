@@ -21,7 +21,7 @@ implements	EmbeddingComponentStateAccessI{
 	{
 		// 2 threads to be able to execute tasks and requests while executing
 		// the DEVS simulation.
-		super(2, 0) ;
+		super(3, 1) ;
 		this.initialise() ;
 
 	}
@@ -53,7 +53,7 @@ implements	EmbeddingComponentStateAccessI{
 
 	@Override
 	public Object getEmbeddingComponentStateValue(String name) throws Exception {
-		return this.asp.getModelStateValue(FridgeModel.URI, "state");
+		return this.asp.getModelStateValue(FridgeModel.URI, "state") + " " + this.asp.getModelStateValue(FridgeModel.URI, "mode") + " " + this.asp.getModelStateValue(FridgeModel.URI, "temperature");
 	}
 
 	@Override
