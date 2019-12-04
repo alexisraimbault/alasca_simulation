@@ -17,29 +17,44 @@ import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulatorI;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 import fr.sorbonne_u.utils.PlotterDescription;
 import fr.sorbonne_u.utils.XYPlotter;
-import events.SwitchOn;
-import events.SwitchOff;
-import events.Freeze;
-import events.Rest;
+import events.Open;
+import events.TriggerTempCheck;
+import events.Close;
 
-@ModelExternalEvents(imported = {SwitchOn.class,
-								 SwitchOff.class,
-								 Freeze.class,
-								 Rest.class})
+@ModelExternalEvents(imported = {Open.class,
+								 Close.class,
+			 					TriggerTempCheck.class})
 
 public class FridgeModel
 extends		AtomicHIOAwithEquations
 {
 	/**
+	 * plaque temperature
 	 * 
+	 * on -> 3
+	 * freeze -> -3
+	 * 
+	 * DOOR CLOSED :
+	 * t(n+1) = t(n) + ((tPlaque - t(n) / 13))
+	 * 
+	 * DOOR OPEN :
+	 * t(n+1) = t(n) + ((tPlaque - t(n) / 13)) + ((tOutside - t(n)) /13)
 	 */
+	
 	private static final long serialVersionUID = 1L;
 
 	public static enum State {
+		OPEN,
+		CLOSED
+	}
+	
+	public static enum Mode {
 		OFF,
 		FREEZE,
 		REST
 	}
+	
+	private double outsideTemperature = 22.0;
 	
 	private static final String		SERIES = "temperature" ;
 	
@@ -48,6 +63,8 @@ extends		AtomicHIOAwithEquations
 	protected XYPlotter tempPlotter ;
 	
 	protected State currentState;
+	
+	protected Mode currentMode;
 	
 	protected final Value<Double> currentTemp = new Value<Double>(this, 0.0, 0) ;
 	
@@ -93,11 +110,29 @@ extends		AtomicHIOAwithEquations
 	public void			initialiseState(Time initialTime)
 	{
 		// the hair dryer starts in mode OFF
-		this.currentState = State.OFF ;
+		this.currentState = State.CLOSED ;
+		
+		this.currentMode = Mode.REST;
 		// initialisation of the intensity plotter 
 		this.tempPlotter.initialise() ;
 		// show the plotter on the screen
 		this.tempPlotter.showPlotter() ;
+		
+		/*
+		// Initialise to get the correct current time.
+		super.initialiseState(initialTime) ;
+
+		// Schedule the first SwitchOn event.
+
+		Time t = this.getCurrentStateTime() ;
+		this.scheduleEvent(new Open(t)) ;
+
+		// Redo the initialisation to take into account the initial event
+		// just scheduled.
+		this.nextTimeAdvance = this.timeAdvance() ;
+		this.timeOfNextEvent =
+				this.getCurrentStateTime().add(this.nextTimeAdvance) ;
+		*/
 
 		try {
 			// set the debug level triggering the production of log messages.
@@ -222,21 +257,60 @@ extends		AtomicHIOAwithEquations
 	public void setState(State s)
 	{
 		this.currentState = s ;
-		switch (s)
-		{
-			case OFF : 
-				break ;
-			case FREEZE :
-				this.currentTemp.v += ((-3 - this.currentTemp.v )/13);
-				break ;
-			case REST :
-				this.currentTemp.v = ((3 - this.currentTemp.v )/13) ;
-		}
+	}
+	
+	public void setMode(Mode m)
+	{
+		this.currentMode = m ;
 	}
 	
 	public State		getState()
 	{
 		return this.currentState ;
+	}
+	
+	public void autoControll()
+	{
+		if(this.currentMode == Mode.REST)
+		{
+			if(currentTemp.v > 6)
+			{
+				this.logMessage("FridgeModel::updateTemperature()::FREEZING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") ;
+				setMode(Mode.FREEZE);
+			}
+		}
+		if(this.currentMode == Mode.FREEZE)
+		{
+			if(currentTemp.v < 4)
+			{
+				this.logMessage("FridgeModel::updateTemperature()::RESTING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") ;
+				setMode(Mode.REST);
+			}
+		}
+	}
+	
+	public void updateTemperature() {
+		if(this.currentMode == Mode.REST)
+		{
+			if(this.currentState == State.CLOSED)
+				currentTemp.v += ((3 - currentTemp.v)/13);
+			else
+			{
+				currentTemp.v += ((3 - outsideTemperature)/13);
+				currentTemp.v += ((3 - currentTemp.v)/13);
+			}
+		}
+		if(this.currentMode == Mode.FREEZE)
+		{
+			if(this.currentState == State.CLOSED)
+				currentTemp.v += ((-3 - currentTemp.v)/13);
+			else
+			{
+				currentTemp.v += ((3 - outsideTemperature)/13);
+				currentTemp.v += ((-3 - currentTemp.v)/13);
+			}
+				
+		}
 	}
 
 }

@@ -4,11 +4,9 @@ import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
-
-import events.Freeze;
-import events.Rest;
-import events.SwitchOff;
-import events.SwitchOn;
+import events.Close;
+import events.Open;
+import events.TriggerTempCheck;
 import fr.sorbonne_u.devs_simulation.es.models.AtomicES_Model;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
@@ -17,10 +15,9 @@ import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulatorI;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 
-@ModelExternalEvents(exported = {SwitchOn.class,
-		 SwitchOff.class,
-		 Freeze.class,
-		 Rest.class})
+@ModelExternalEvents(exported = {Open.class,
+		 						Close.class,
+		 						TriggerTempCheck.class})
 
 public class FridgeUserModel extends AtomicES_Model
 {
@@ -37,12 +34,16 @@ public class FridgeUserModel extends AtomicES_Model
 	protected double	meanTimeAtHigh ;
 	/** during one use, mean time the hair dryer is at low temperature.		*/
 	protected double	meanTimeAtLow ;
+	
+	protected double	meanTimeBetweenTempUpdate ;
 	/** next event to be sent.												*/
 	protected Class<?>	nextEvent ;
 	
 	protected final RandomDataGenerator		rg ;
 	
 	protected FridgeModel.State fs ;
+	
+	protected boolean initialCall;
 	
 	
 	public FridgeUserModel(
@@ -68,7 +69,11 @@ public class FridgeUserModel extends AtomicES_Model
 		this.meanTimeBetweenUsages = 10.0 ;
 		this.meanTimeAtHigh = 4.0 ;
 		this.meanTimeAtLow = 3.0 ;
-		this.fs = FridgeModel.State.OFF ;
+		
+		this.initialCall = true;
+		
+		this.meanTimeBetweenTempUpdate = 7.0;
+		this.fs = FridgeModel.State.CLOSED ;
 
 		this.rg.reSeedSecure() ;
 
@@ -85,7 +90,9 @@ public class FridgeUserModel extends AtomicES_Model
 											this.rg.nextBeta(1.75, 1.75),
 					this.getSimulatedTimeUnit()) ;
 		Time t = this.getCurrentStateTime().add(d1).add(d2) ;
-		this.scheduleEvent(new SwitchOn(t)) ;
+		this.scheduleEvent(new Open(t)) ;
+		
+		//this.scheduleEvent(new TriggerTempCheck(t)) ;
 
 		// Redo the initialisation to take into account the initial event
 		// just scheduled.
@@ -154,7 +161,7 @@ public class FridgeUserModel extends AtomicES_Model
 		Duration d ;
 		// See what is the type of event to be executed
 		
-		if (this.nextEvent.equals(SwitchOn.class)) {
+		if (this.nextEvent.equals(Open.class)) {
 			
 			// when a switch on event has been issued, plan the next event as
 			// a set high (the hair dryer is switched on in low mode
@@ -163,28 +170,32 @@ public class FridgeUserModel extends AtomicES_Model
 			// compute the time of occurrence (in the future)
 			Time t = this.getCurrentStateTime().add(d) ;
 			// schedule the event
-			this.scheduleEvent(new Freeze(t)) ;
+			if(Math.random() < 0.75)
+				this.scheduleEvent(new Close(t)) ;
+			
 			// also, plan the next switch on for the next day
 			d = new Duration(this.interdayDelay, this.getSimulatedTimeUnit()) ;
 			this.scheduleEvent(
-						new SwitchOn(this.getCurrentStateTime().add(d))) ;
-		} else if (this.nextEvent.equals(Freeze.class)) {
-			// when a set high event has been issued, plan the next set low
-			// after some time of usage
-			d =	new Duration(
-					2.0 * this.meanTimeAtHigh * this.rg.nextBeta(1.75, 1.75),
-					this.getSimulatedTimeUnit()) ;
-			this.scheduleEvent(new Rest(this.getCurrentStateTime().add(d))) ;
-		} else if (this.nextEvent.equals(Rest.class)) {
-			// when a set high event has been issued, plan the next switch off
-			// after some time of usage
-			d =	new Duration(
-					2.0 * this.meanTimeAtLow * this.rg.nextBeta(1.75, 1.75),
-					this.getSimulatedTimeUnit()) ;
-			this.scheduleEvent(
-					new SwitchOff(this.getCurrentStateTime().add(d))) ;
+						new Open(this.getCurrentStateTime().add(d))) ;
+			
+			
+			if(this.initialCall)
+			{
+				this.logMessage("test initial call...");
+				d = new Duration(this.meanTimeBetweenTempUpdate, this.getSimulatedTimeUnit()) ;
+				this.scheduleEvent(
+							new TriggerTempCheck(this.getCurrentStateTime().add(d))) ;
+				this.initialCall = false;
+			}
+		}else{
+			if (this.nextEvent.equals(TriggerTempCheck.class)) {
+				d = new Duration(this.meanTimeBetweenTempUpdate, this.getSimulatedTimeUnit()) ;
+				// compute the time of occurrence (in the future)
+				Time t = this.getCurrentStateTime().add(d) ;
+				// schedule the event
+				this.scheduleEvent(new TriggerTempCheck(t)) ;
+			}
 		}
-		
 	}
 	
 }

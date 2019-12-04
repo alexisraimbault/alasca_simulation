@@ -5,11 +5,11 @@ import fr.sorbonne_u.devs_simulation.models.AtomicModel;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 
-public class Rest extends		AbstractFridgeEvent
+public class Close extends		AbstractFridgeEvent
 {
 	private static final long serialVersionUID = 1L;
 	
-	public Rest(Time timeOfOccurrence)
+	public Close(Time timeOfOccurrence)
 	{
 		super(timeOfOccurrence, null) ;
 	}
@@ -17,17 +17,13 @@ public class Rest extends		AbstractFridgeEvent
 	@Override
 	public String eventAsString()
 	{
-		return "Fridge::Rest" ;
+		return "Fridge::Close" ;
 	}
 	
 	@Override
 	public boolean hasPriorityOver(EventI e)
 	{
-		if (e instanceof SwitchOn || e instanceof Freeze) {
-			return false ;
-		} else {
-			return true ;
-		}
+		return true ;
 	}
 	
 	@Override
@@ -35,6 +31,6 @@ public class Rest extends		AbstractFridgeEvent
 	{
 		assert	model instanceof FridgeModel ;
 
-		((FridgeModel)model).setState(FridgeModel.State.REST) ;
+		((FridgeModel)model).setState(FridgeModel.State.CLOSED) ;
 	}
 }

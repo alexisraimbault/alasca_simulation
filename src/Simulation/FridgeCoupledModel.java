@@ -6,10 +6,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import events.Freeze;
-import events.Rest;
-import events.SwitchOff;
-import events.SwitchOn;
+import events.Close;
+import events.Open;
+import events.TriggerTempCheck;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.architectures.SimulationEngineCreationMode;
 import fr.sorbonne_u.devs_simulation.hioa.architectures.AtomicHIOA_Descriptor;
@@ -92,26 +91,22 @@ public class FridgeCoupledModel extends CoupledModel
 		Map<EventSource,EventSink[]> connections =
 									new HashMap<EventSource,EventSink[]>() ;
 		EventSource from1 =
-				new EventSource(FridgeUserModel.URI, SwitchOn.class) ;
+				new EventSource(FridgeUserModel.URI, Open.class) ;
 		EventSink[] to1 =
 				new EventSink[] {
-						new EventSink(FridgeModel.URI, SwitchOn.class)} ;
+						new EventSink(FridgeModel.URI, Open.class)} ;
 		connections.put(from1, to1) ;
 		EventSource from2 =
-				new EventSource(FridgeUserModel.URI, SwitchOff.class) ;
+				new EventSource(FridgeUserModel.URI, Close.class) ;
 		EventSink[] to2 = new EventSink[] {
-				new EventSink(FridgeModel.URI, SwitchOff.class)} ;
+				new EventSink(FridgeModel.URI, Close.class)} ;
 		connections.put(from2, to2) ;
+		
 		EventSource from3 =
-				new EventSource(FridgeUserModel.URI, Rest.class) ;
+				new EventSource(FridgeUserModel.URI, TriggerTempCheck.class) ;
 		EventSink[] to3 = new EventSink[] {
-				new EventSink(FridgeModel.URI, Rest.class)} ;
+				new EventSink(FridgeModel.URI, TriggerTempCheck.class)} ;
 		connections.put(from3, to3) ;
-		EventSource from4 =
-				new EventSource(FridgeUserModel.URI, Freeze.class) ;
-		EventSink[] to4 = new EventSink[] {
-				new EventSink(FridgeModel.URI, Freeze.class)} ;
-		connections.put(from4, to4) ;
 
 		coupledModelDescriptors.put(
 					FridgeCoupledModel.URI,
