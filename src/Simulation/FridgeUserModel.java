@@ -4,6 +4,8 @@ import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
+
+import Simulation.FridgeModel.State;
 import events.Close;
 import events.Open;
 import events.TriggerTempCheck;
@@ -14,6 +16,8 @@ import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulatorI;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
+import fr.sorbonne_u.utils.PlotterDescription;
+import fr.sorbonne_u.utils.XYPlotter;
 
 @ModelExternalEvents(exported = {Open.class,
 		 						Close.class,
@@ -23,6 +27,8 @@ public class FridgeUserModel extends AtomicES_Model
 {
 	private static final long serialVersionUID = 1L ;
 	public static final String	URI = "FridgeUserModel" ;
+	
+	private static final String		SERIES = "mode" ;
 	
 	/** initial delay before sending the first switch on event.				*/
 	protected double	initialDelay ;
@@ -45,6 +51,7 @@ public class FridgeUserModel extends AtomicES_Model
 	
 	protected boolean initialCall;
 	
+	protected XYPlotter modePlotter ;
 	
 	public FridgeUserModel(
 			String uri,
@@ -55,6 +62,18 @@ public class FridgeUserModel extends AtomicES_Model
 			super(uri, simulatedTimeUnit, simulationEngine) ;
 
 			this.rg = new RandomDataGenerator() ;
+			
+			PlotterDescription pd =
+					new PlotterDescription(
+							"Fridge State",
+							"Time (sec)",
+							"state",
+							700,
+							0,
+							600,
+							400) ;
+			this.modePlotter = new XYPlotter(pd) ;
+			this.modePlotter.createSeries(SERIES) ;
 
 			// create a standard logger (logging on the terminal)
 			this.setLogger(new StandardLogger()) ;
@@ -74,6 +93,10 @@ public class FridgeUserModel extends AtomicES_Model
 		
 		this.meanTimeBetweenTempUpdate = 7.0;
 		this.fs = FridgeModel.State.CLOSED ;
+		
+		this.modePlotter.initialise() ;
+		
+		this.modePlotter.showPlotter() ;
 
 		this.rg.reSeedSecure() ;
 
@@ -117,6 +140,10 @@ public class FridgeUserModel extends AtomicES_Model
 		Duration d = super.timeAdvance() ;
 		this.logMessage("FridgeUserModel::timeAdvance() 1 " + d +
 									" " + this.eventListAsString()) ;
+		this.modePlotter.addData(
+				SERIES,
+				this.getCurrentStateTime().getSimulatedTime(),
+				state2int(fs));
 		return d ;
 	}
 	
@@ -162,7 +189,7 @@ public class FridgeUserModel extends AtomicES_Model
 		// See what is the type of event to be executed
 		
 		if (this.nextEvent.equals(Open.class)) {
-			
+			applyState(State.OPEN);
 			// when a switch on event has been issued, plan the next event as
 			// a set high (the hair dryer is switched on in low mode
 			d = new Duration(2.0 * this.rg.nextBeta(1.75, 1.75),
@@ -170,8 +197,10 @@ public class FridgeUserModel extends AtomicES_Model
 			// compute the time of occurrence (in the future)
 			Time t = this.getCurrentStateTime().add(d) ;
 			// schedule the event
-			if(Math.random() < 0.75)
+			if(Math.random() < 0.65)
 				this.scheduleEvent(new Close(t)) ;
+			
+			//OPEN (- CLOSE?) ---------- OPEN (- CLOSE ?) ----------- OPEN - CLOSE
 			
 			// also, plan the next switch on for the next day
 			d = new Duration(this.interdayDelay, this.getSimulatedTimeUnit()) ;
@@ -179,23 +208,47 @@ public class FridgeUserModel extends AtomicES_Model
 						new Open(this.getCurrentStateTime().add(d))) ;
 			
 			
-			if(this.initialCall)
+			/*if(this.initialCall)
 			{
 				this.logMessage("test initial call...");
 				d = new Duration(this.meanTimeBetweenTempUpdate, this.getSimulatedTimeUnit()) ;
 				this.scheduleEvent(
 							new TriggerTempCheck(this.getCurrentStateTime().add(d))) ;
 				this.initialCall = false;
-			}
+			}*/
 		}else{
-			if (this.nextEvent.equals(TriggerTempCheck.class)) {
-				d = new Duration(this.meanTimeBetweenTempUpdate, this.getSimulatedTimeUnit()) ;
-				// compute the time of occurrence (in the future)
-				Time t = this.getCurrentStateTime().add(d) ;
-				// schedule the event
-				this.scheduleEvent(new TriggerTempCheck(t)) ;
-			}
+			assert this.nextEvent.equals(Close.class);
+			applyState(State.CLOSED);
 		}
+	}
+	
+	
+	public static int state2int(State s)
+	{
+		assert	s != null ;
+
+		if (s == State.OPEN) {
+			return 2 ;
+		} else {
+			assert	s == State.CLOSED;
+			return 1 ;
+		}
+	}
+	
+	public void applyState(State s)
+	{
+		assert	s != null ;
+
+		if (s == State.OPEN) {
+			fs = State.OPEN;
+		} else {
+			assert	s == State.CLOSED;
+			fs = State.CLOSED;
+		}
+		this.modePlotter.addData(
+				SERIES,
+				this.getCurrentStateTime().getSimulatedTime(),
+				state2int(fs));
 	}
 	
 }

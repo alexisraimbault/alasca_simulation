@@ -57,10 +57,12 @@ extends		AtomicHIOAwithEquations
 	private double outsideTemperature = 22.0;
 	
 	private static final String		SERIES = "temperature" ;
+	private static final String		SERIES1 = "mode" ;
 	
 	public static final String		URI = "FridgeModel" ;
 	
 	protected XYPlotter tempPlotter ;
+	protected XYPlotter modePlotter ;
 	
 	protected State currentState;
 	
@@ -69,6 +71,8 @@ extends		AtomicHIOAwithEquations
 	protected final Value<Double> currentTemp = new Value<Double>(this, 0.0, 0) ;
 	
 	protected EmbeddingComponentStateAccessI componentRef ;
+	
+	protected Duration delay ;
 	
 	public FridgeModel(
 			String uri,
@@ -91,6 +95,19 @@ extends		AtomicHIOAwithEquations
 						400) ;
 		this.tempPlotter = new XYPlotter(pd) ;
 		this.tempPlotter.createSeries(SERIES) ;
+		
+		PlotterDescription pd1 =
+				new PlotterDescription(
+						"Fridge Mode",
+						"Time (sec)",
+						"Mode",
+						100,
+						400,
+						600,
+						400) ;
+		this.modePlotter = new XYPlotter(pd1) ;
+		this.modePlotter.createSeries(SERIES1) ;
+		
 
 		// create a standard logger (logging on the terminal)
 		this.setLogger(new StandardLogger()) ;
@@ -104,6 +121,7 @@ extends		AtomicHIOAwithEquations
 		// The reference to the embedding component
 		this.componentRef =
 			(EmbeddingComponentStateAccessI) simParams.get("componentRef") ;
+		this.delay = new Duration(1.0, this.getSimulatedTimeUnit());
 	}
 	
 	@Override
@@ -118,15 +136,16 @@ extends		AtomicHIOAwithEquations
 		// show the plotter on the screen
 		this.tempPlotter.showPlotter() ;
 		
+		this.modePlotter.initialise() ;
+		
+		this.modePlotter.showPlotter() ;
+		
 		/*
 		// Initialise to get the correct current time.
 		super.initialiseState(initialTime) ;
-
 		// Schedule the first SwitchOn event.
-
 		Time t = this.getCurrentStateTime() ;
 		this.scheduleEvent(new Open(t)) ;
-
 		// Redo the initialisation to take into account the initial event
 		// just scheduled.
 		this.nextTimeAdvance = this.timeAdvance() ;
@@ -155,20 +174,18 @@ extends		AtomicHIOAwithEquations
 				SERIES,
 				this.getCurrentStateTime().getSimulatedTime(),
 				this.getTemp());
-
+		
+		this.modePlotter.addData(
+				SERIES1,
+				this.getCurrentStateTime().getSimulatedTime(),
+				mode2int(currentMode));
+		
 		super.initialiseVariables(startTime);
 	}
 	
 	public Duration		timeAdvance()
 	{
-		if (this.componentRef == null) {
-			// the model has no internal event, however, its state will evolve
-			// upon reception of external events.
-			return Duration.INFINITY ;
-		} else {
-			// This is to test the embedding component access facility.
-			return new Duration(10.0, TimeUnit.SECONDS) ;
-		}
+		return this.delay;
 	}
 	
 	@Override
@@ -211,10 +228,10 @@ extends		AtomicHIOAwithEquations
 
 		// the plot is piecewise constant; this data will close the currently
 		// open piece
-		this.tempPlotter.addData(
+		/*this.tempPlotter.addData(
 				SERIES,
 				this.getCurrentStateTime().getSimulatedTime(),
-				this.getTemp());
+				this.getTemp());*/
 
 		if (this.hasDebugLevel(2)) {
 			this.logMessage("FridgeModel::userDefinedExternalTransition 3 "
@@ -231,11 +248,10 @@ extends		AtomicHIOAwithEquations
 		}
 
 		// add a new data on the plotter; this data will open a new piece
-		this.tempPlotter.addData(
+		/*this.tempPlotter.addData(
 				SERIES,
 				this.getCurrentStateTime().getSimulatedTime(),
-				this.getTemp());
-
+				this.getTemp());*/
 		super.userDefinedExternalTransition(elapsedTime) ;
 		if (this.hasDebugLevel(2)) {
 			this.logMessage("FridgeModel::userDefinedExternalTransition 5") ;
@@ -245,7 +261,8 @@ extends		AtomicHIOAwithEquations
 	@Override
 	public Vector<EventI>	output()
 	{
-		// the model does not export any event.
+		this.updateTemperature();
+		this.autoControll();
 		return null ;
 	}
 	
@@ -292,6 +309,11 @@ extends		AtomicHIOAwithEquations
 				setMode(Mode.REST);
 			}
 		}
+		
+		this.modePlotter.addData(
+				SERIES1,
+				this.getCurrentStateTime().getSimulatedTime(),
+				mode2int(currentMode));
 	}
 	
 	public void updateTemperature() {
@@ -315,6 +337,25 @@ extends		AtomicHIOAwithEquations
 				currentTemp.v += ((-3 - currentTemp.v)/13);
 			}
 				
+		}
+		this.tempPlotter.addData(
+				SERIES,
+				this.getCurrentStateTime().getSimulatedTime(),
+				this.getTemp());
+	}
+
+	
+	public static int mode2int(Mode s)
+	{
+		assert	s != null ;
+
+		if (s == Mode.OFF) {
+			return 1 ;
+		} else if (s == Mode.REST) {
+			return 2 ;
+		} else {
+			assert	s == Mode.FREEZE;
+			return 3 ;
 		}
 	}
 

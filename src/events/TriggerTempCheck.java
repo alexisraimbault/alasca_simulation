@@ -31,7 +31,7 @@ private static final long serialVersionUID = 1L;
 	{
 		assert	model instanceof FridgeModel ;
 
-		((FridgeModel)model).updateTemperature() ;
-		((FridgeModel)model).autoControll() ;
+		/*((FridgeModel)model).updateTemperature() ;
+		((FridgeModel)model).autoControll() ;*/
 	}
 }
