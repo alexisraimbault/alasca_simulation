@@ -3,6 +3,7 @@ package components;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import Simulation.FridgeModel.State;
 import classes.PlanifiedTask;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
@@ -67,9 +68,9 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 		this.tracer.setRelativePosition(1, 0) ;
 
 	}
-	public String getFridgeState() throws Exception
+	public State getFridgeState() throws Exception
 	{
-		String state = this.towardsFridge.getFridgeState();
+		State state = this.towardsFridge.getFridgeState();
 		//this.logMessage("fridge state : " + state);
 		return state;
 	}
@@ -128,6 +129,7 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	
 	public void step() throws Exception
 	{
+		this.logMessage("STEPPING...");
 		this.getEPConsommation();
 		this.updateTasks();
 		this.controllFridge();
@@ -137,7 +139,9 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	
 	public void controllFridge() throws Exception
 	{
-		//TODO
+		this.logMessage("fridge info...");
+		this.logMessage("fridge temperature : " + getFridgeTemperature());
+		this.logMessage("fridge state : " + getFridgeState());
 	}
 	
 	public void controllHeater() throws Exception
@@ -174,7 +178,7 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 		this.logMessage("starting controller component.") ;
 		
 		// Schedule the first service method invocation in one second.
-		this.scheduleTask(
+		/*this.scheduleTask(
 			new AbstractComponent.AbstractTask() {
 				@Override
 				public void run() {
@@ -185,9 +189,9 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 					}
 				}
 			},
-			1000, TimeUnit.MILLISECONDS);
+			1000, TimeUnit.MILLISECONDS);*/
 		
-		this.scheduleTask(
+		/*this.scheduleTask(
 				new AbstractComponent.AbstractTask() {
 					@Override
 					public void run() {
@@ -198,9 +202,9 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 						}
 					}
 				},
-				1000, TimeUnit.MILLISECONDS);
+				1000, TimeUnit.MILLISECONDS);*/
 		
-		this.scheduleTask(
+		/*this.scheduleTask(
 				new AbstractComponent.AbstractTask() {
 					@Override
 					public void run() {
@@ -211,9 +215,9 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 						}
 					}
 				},
-				1000, TimeUnit.MILLISECONDS);
+				1000, TimeUnit.MILLISECONDS);*/
 		
-		this.scheduleTask(
+		/*this.scheduleTask(
 				new AbstractComponent.AbstractTask() {
 					@Override
 					public void run() {
@@ -224,9 +228,9 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 						}
 					}
 				},
-				2000, TimeUnit.MILLISECONDS);
+				2000, TimeUnit.MILLISECONDS);*/
 		
-		this.scheduleTask(
+		/*this.scheduleTask(
 				new AbstractComponent.AbstractTask() {
 					@Override
 					public void run() {
@@ -237,7 +241,7 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 						}
 					}
 				},
-				3000, TimeUnit.MILLISECONDS);
+				3000, TimeUnit.MILLISECONDS);*/
 		
 		this.scheduleTaskWithFixedDelay(		
 				new AbstractComponent.AbstractTask() {
@@ -249,7 +253,7 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 							throw new RuntimeException(e) ;
 						}
 					}
-				}, 4000, 1000 // délai entre la fin d'une exécution et la suivante, à modifier 
+				}, 1000, 1000 // délai entre la fin d'une exécution et la suivante, à modifier 
 				,TimeUnit.MILLISECONDS) ;
 		
 		

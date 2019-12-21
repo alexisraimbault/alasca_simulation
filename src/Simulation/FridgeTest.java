@@ -1,28 +1,41 @@
 package Simulation;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
+import Simulation.FridgeModel.State;
+import components.Fridge;
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cyphy.AbstractCyPhyComponent;
 import fr.sorbonne_u.components.cyphy.interfaces.EmbeddingComponentStateAccessI;
+import fr.sorbonne_u.components.exceptions.ComponentStartException;
+import fr.sorbonne_u.components.exceptions.PostconditionException;
 import fr.sorbonne_u.cyphy.examples.sg.equipments.hairdryer.components.HairDryerSimulatorPlugin;
 import fr.sorbonne_u.cyphy.examples.sg.equipments.hairdryer.models.HairDryerCoupledModel;
 import fr.sorbonne_u.cyphy.examples.sg.equipments.hairdryer.models.HairDryerModel;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.simulators.SimulationEngine;
+import interfaces.FridgeI;
+import interfaces.LaunchableOfferedI;
+import ports.ComponentEPObp;
+import ports.FridgeIbp;
+import ports.LaunchableIbp;
 
 public class FridgeTest 
 extends		AbstractCyPhyComponent
 implements	EmbeddingComponentStateAccessI{
 	
 	protected FridgeSimulatorPlugin		asp ;
+	
 
-	protected			FridgeTest() throws Exception
+	public			FridgeTest() throws Exception
 	{
 		// 2 threads to be able to execute tasks and requests while executing
 		// the DEVS simulation.
-		super(3, 1) ;
+		super(2, 0) ;
 		this.initialise() ;
+		
 
 	}
 
@@ -77,7 +90,7 @@ implements	EmbeddingComponentStateAccessI{
 					@Override
 					public void run() {
 						try {
-							asp.doStandAloneSimulation(0.0, 500.0) ;
+							asp.doStandAloneSimulation(0.0, 1000000L) ;
 						} catch (Exception e) {
 							throw new RuntimeException(e) ;
 						}
@@ -93,4 +106,15 @@ implements	EmbeddingComponentStateAccessI{
 			Thread.sleep(5L) ;
 		}
 	}
+	
+	public double getTemperature() throws Exception {
+		System.out.println("TEST GET FRIDGE TEMP FRIDGE : " + this.asp.getModelStateValue(FridgeModel.URI, "temperature"));
+		return (double) this.asp.getModelStateValue(FridgeModel.URI, "temperature");
+	}
+	
+	public State getState() throws Exception {
+		System.out.println("TEST GET FRIDGE STATE FRIDGE : " + this.asp.getModelStateValue(FridgeModel.URI, "state"));
+		return (State) this.asp.getModelStateValue(FridgeModel.URI, "state");
+	}
+	
 }

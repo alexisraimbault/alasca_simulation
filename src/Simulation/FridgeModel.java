@@ -155,7 +155,7 @@ extends		AtomicHIOAwithEquations
 
 		try {
 			// set the debug level triggering the production of log messages.
-			this.setDebugLevel(1) ;
+			this.setDebugLevel(0) ;
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
 		}
@@ -268,6 +268,7 @@ extends		AtomicHIOAwithEquations
 	
 	public double getTemp()
 	{
+		//System.out.println("TEST GET FRIDGE TEMP FRIDGE MODEL : " + currentTemp.v);
 		return currentTemp.v;
 	}
 	
@@ -323,7 +324,7 @@ extends		AtomicHIOAwithEquations
 				currentTemp.v += ((3 - currentTemp.v)/13);
 			else
 			{
-				currentTemp.v += ((outsideTemperature - currentTemp.v)/17);
+				currentTemp.v += ((outsideTemperature - currentTemp.v)/30);
 				currentTemp.v += ((3 - currentTemp.v)/13);
 			}
 		}
@@ -333,7 +334,7 @@ extends		AtomicHIOAwithEquations
 				currentTemp.v += ((-3 - currentTemp.v)/13);
 			else
 			{
-				currentTemp.v += ((outsideTemperature - currentTemp.v)/17);
+				currentTemp.v += ((outsideTemperature - currentTemp.v)/30);
 				currentTemp.v += ((-3 - currentTemp.v)/13);
 			}
 				

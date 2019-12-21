@@ -1,5 +1,6 @@
 package connectors;
 
+import Simulation.FridgeModel.State;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 import interfaces.ControllerFridgeI;
 import interfaces.FridgeI;
@@ -7,7 +8,7 @@ import interfaces.FridgeI;
 public class ControllerFridgeConnector extends AbstractConnector implements ControllerFridgeI{
 
 	@Override
-	public String getFridgeState() throws Exception {
+	public State getFridgeState() throws Exception {
 		return ((FridgeI)this.offering).getState() ;
 	}
 
@@ -23,6 +24,7 @@ public class ControllerFridgeConnector extends AbstractConnector implements Cont
 
 	@Override
 	public double getFridgeTemperature() throws Exception {
+		System.out.println("TEST GET FRIDGE TEMP CONNECTOR");
 		return ((FridgeI)this.offering).getTemperature() ;
 	}
 

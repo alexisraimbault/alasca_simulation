@@ -1,3 +1,5 @@
-/components/
+/interfaces/
+/ports/
 /Simulation/
-/events/
+/components/
+/connectors/
