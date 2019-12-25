@@ -29,6 +29,7 @@ public class Close extends		AbstractFridgeEvent
 	@Override
 	public void executeOn(AtomicModel model)
 	{
+		System.out.println("Close.executeOn : " + model.getClass());
 		assert	model instanceof FridgeModel ;
 
 		((FridgeModel)model).setState(FridgeModel.State.CLOSED) ;

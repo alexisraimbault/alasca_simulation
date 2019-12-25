@@ -1,16 +1,14 @@
-package events;
+package Simulation.oven;
 
-import Simulation.FridgeModel;
 import fr.sorbonne_u.devs_simulation.models.AtomicModel;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 
-public class Open 
-extends		AbstractFridgeEvent
+public class SetOff extends		AbstractOvenEvent
 {
 	private static final long serialVersionUID = 1L;
 	
-	public Open(Time timeOfOccurrence)
+	public SetOff(Time timeOfOccurrence)
 	{
 		super(timeOfOccurrence, null) ;
 	}
@@ -18,24 +16,20 @@ extends		AbstractFridgeEvent
 	@Override
 	public String eventAsString()
 	{
-		return "Fridge::Open" ;
+		return "Test::SetOff" ;
 	}
 	
 	@Override
 	public boolean hasPriorityOver(EventI e)
 	{
-		if(e instanceof Close)
-			return false ;
-		else
-			return true;
+		return false ;
 	}
 	
 	@Override
 	public void executeOn(AtomicModel model)
 	{
-		System.out.println("Open.executeOn : " + model.getClass());
-		assert	model instanceof FridgeModel ;
-
-		((FridgeModel)model).setState(FridgeModel.State.OPEN) ;
+		System.out.println("SetOff.executeOn : " + model.getClass());
+		if(model instanceof OvenModel)
+			((OvenModel)model).setMode(OvenModel.Mode.OFF) ;
 	}
 }
