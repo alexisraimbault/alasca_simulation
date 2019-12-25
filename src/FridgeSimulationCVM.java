@@ -1,4 +1,4 @@
-import Simulation.FridgeTest;
+import Simulation.fridge.FridgeSimulationComponent;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.devs_simulation.simulators.SimulationEngine;
@@ -22,7 +22,7 @@ extends		AbstractCVM
 		@SuppressWarnings("unused")
 		String componentURI =
 				AbstractComponent.createComponent(
-						FridgeTest.class.getCanonicalName(),
+						FridgeSimulationComponent.class.getCanonicalName(),
 						new Object[]{}) ;
 
 		super.deploy();

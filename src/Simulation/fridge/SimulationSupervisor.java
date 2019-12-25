@@ -1,4 +1,4 @@
-package Simulation;
+package Simulation.fridge;
 
 import java.util.HashMap;
 import java.util.HashSet;

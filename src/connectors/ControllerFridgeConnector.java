@@ -1,6 +1,6 @@
 package connectors;
 
-import Simulation.FridgeModel.State;
+import Simulation.fridge.FridgeModel.State;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 import interfaces.ControllerFridgeI;
 import interfaces.FridgeI;

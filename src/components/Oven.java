@@ -1,28 +1,27 @@
 package components;
 
-
-import java.util.concurrent.TimeUnit;
-
-import Simulation.fridge.FridgeSimulationComponent;
-import Simulation.fridge.FridgeModel.State;
+import Simulation.oven.OvenSimulationComponent;
+import Simulation.oven.OvenModel.Mode;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.exceptions.PostconditionException;
-import interfaces.FridgeI;
-import interfaces.LaunchableOfferedI;
 import interfaces.ComponentEPI;
+import interfaces.LaunchableOfferedI;
+import interfaces.OvenI;
 import ports.ComponentEPObp;
-import ports.FridgeIbp;
+import ports.OvenIbp;
 import ports.LaunchableIbp;
 
-@OfferedInterfaces(offered = {FridgeI.class, LaunchableOfferedI.class})
+@OfferedInterfaces(offered = {OvenI.class, LaunchableOfferedI.class})
 @RequiredInterfaces(required = {ComponentEPI.class})
-public class Fridge extends AbstractComponent implements LaunchableOfferedI {
-	private FridgeIbp ibp;
-	private FridgeSimulationComponent ft;
+
+public class Oven extends AbstractComponent implements LaunchableOfferedI {
+
+	private OvenIbp ibp;
+	private OvenSimulationComponent ft;
 	private LaunchableIbp launchIbp;
 
 	/*
@@ -39,10 +38,10 @@ public class Fridge extends AbstractComponent implements LaunchableOfferedI {
 	private ComponentEPObp epObp;
 	
 	
-	protected Fridge(String fridgeURI, String ibpURI, String epURI, String launchUri) throws Exception {
-		super(fridgeURI,  1, 1) ;
+	protected Oven(String ovenURI, String ibpURI, String epURI, String launchUri) throws Exception {
+		super(ovenURI,  1, 1) ;
 
-		this.ft = new FridgeSimulationComponent();
+		this.ft = new OvenSimulationComponent();
 		
 		this.launchIbp = new LaunchableIbp(launchUri, this) ;
 		this.launchIbp.publishPort() ;
@@ -50,7 +49,7 @@ public class Fridge extends AbstractComponent implements LaunchableOfferedI {
 		//toléré de 0 - 7
 		//préférence 4 - 5
 		
-		this.ibp = new FridgeIbp(ibpURI, this) ;
+		this.ibp = new OvenIbp(ibpURI, this) ;
 		this.ibp.publishPort() ;
 		
 		this.epObp = new ComponentEPObp(epURI, this);
@@ -66,41 +65,23 @@ public class Fridge extends AbstractComponent implements LaunchableOfferedI {
 			new PostconditionException("The component must have a "
 					+ "port with URI " + ibpURI) ;
 		assert	this.findPortFromURI(ibpURI).
-					getImplementedInterface().equals(FridgeI.class) :
+					getImplementedInterface().equals(OvenI.class) :
 					new PostconditionException("The component must have a "
 							+ "port with implemented interface URIProviderI") ;
 		assert	this.findPortFromURI(ibpURI).isPublished() :
 					new PostconditionException("The component must have a "
 							+ "port published with URI " + ibpURI) ;
 		
-		this.tracer.setTitle("fridge") ;
-		this.tracer.setRelativePosition(3, 0) ;
+		this.tracer.setTitle("Oven") ;
+		this.tracer.setRelativePosition(3, 2) ;
 		
-	}
-
-	public double getTemperature() throws Exception {
-		return ft.getTemperature();
 	}
 	
-	public State getState() throws Exception {
-		return ft.getState();
-	}
 	
-	public void switchOn() throws Exception {
-			
+	public Mode getMode() throws Exception {
+		return ft.getMode();
 	}
 
-	public void switchOff() {
-			
-	}
-
-	public void freeze() throws Exception {
-		
-	}
-
-	public void rest() throws Exception {
-		
-	}
 	
 	public void step() throws Exception
 	{
@@ -122,7 +103,7 @@ public class Fridge extends AbstractComponent implements LaunchableOfferedI {
 	public void			start() throws ComponentStartException
 	{
 		super.start() ;
-		this.logMessage("starting fridge component.") ;
+		this.logMessage("starting Oven component.") ;
 		
 		// Schedule the first service method invocation in one second.
 
@@ -138,7 +119,7 @@ public class Fridge extends AbstractComponent implements LaunchableOfferedI {
 	@Override
 	public void			finalise() throws Exception
 	{
-		this.logMessage("stopping fridge component.") ;
+		this.logMessage("stopping Oven component.") ;
 		// This is the place where to clean up resources, such as
 		// disconnecting and unpublishing ports that will be destroyed
 		// when shutting down.
@@ -156,7 +137,6 @@ public class Fridge extends AbstractComponent implements LaunchableOfferedI {
 	public void launchTasks() throws Exception {
 		
 	}
+
+
 }
-//-----------------------------------------------------------------------------
-
-

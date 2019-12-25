@@ -1,6 +1,6 @@
 package events;
 
-import Simulation.FridgeModel;
+import Simulation.fridge.FridgeModel;
 import fr.sorbonne_u.devs_simulation.models.AtomicModel;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
@@ -33,7 +33,6 @@ extends		AbstractFridgeEvent
 	@Override
 	public void executeOn(AtomicModel model)
 	{
-		System.out.println("Open.executeOn : " + model.getClass());
 		assert	model instanceof FridgeModel ;
 
 		((FridgeModel)model).setState(FridgeModel.State.OPEN) ;

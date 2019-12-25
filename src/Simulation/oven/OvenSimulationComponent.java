@@ -28,7 +28,7 @@ implements	EmbeddingComponentStateAccessI{
 
 	protected OvenSimulationComponent(String reflectionInboundPortURI) throws Exception
 	{
-		super(reflectionInboundPortURI, 1, 0) ;
+		super(reflectionInboundPortURI, 2, 0) ;
 		this.initialise() ;
 	}
 	
@@ -53,7 +53,7 @@ implements	EmbeddingComponentStateAccessI{
 
 	@Override
 	public Object getEmbeddingComponentStateValue(String name) throws Exception {
-		return this.asp.getModelStateValue(OvenModel.URI, "state") + " " + this.asp.getModelStateValue(OvenModel.URI, "mode") + " " + this.asp.getModelStateValue(OvenModel.URI, "temperature");
+		return this.asp.getModelStateValue(OvenModel.URI, "mode");
 	}
 
 	@Override
@@ -69,7 +69,7 @@ implements	EmbeddingComponentStateAccessI{
 		// following lines show how to set the reference to the embedding
 		// component or a proxy responding to the access calls.
 		HashMap<String,Object> simParams = new HashMap<String,Object>() ;
-		simParams.put("componentRef", this) ;
+		simParams.put("componentRef1", this) ;
 		this.asp.setSimulationRunParameters(simParams) ;
 		// Start the simulation.
 		this.runTask(
@@ -88,19 +88,13 @@ implements	EmbeddingComponentStateAccessI{
 		// to use the simulation model access facility by the component.
 		for (int i = 0 ; i < 100 ; i++) {
 			this.logMessage("Test " +
-				this.asp.getModelStateValue(OvenModel.URI, "state") + " " +
-				this.asp.getModelStateValue(OvenModel.URI, "temperature")) ;
+				this.asp.getModelStateValue(OvenModel.URI, "mode") );
 			Thread.sleep(5L) ;
 		}
 	}
 	
-	public double getTemperature() throws Exception {
-		System.out.println("TEST GET Test TEMP Test : " + this.asp.getModelStateValue(OvenModel.URI, "temperature"));
-		return (double) this.asp.getModelStateValue(OvenModel.URI, "temperature");
-	}
 	
 	public Mode getMode() throws Exception {
-		System.out.println("TEST GET Test STATE Test : " + this.asp.getModelStateValue(OvenModel.URI, "mode"));
 		return (Mode) this.asp.getModelStateValue(OvenModel.URI, "mode");
 	}
 	

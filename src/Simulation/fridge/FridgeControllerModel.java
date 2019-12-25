@@ -1,10 +1,10 @@
-package Simulation;
+package Simulation.fridge;
 
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
-import Simulation.FridgeModel.Mode;
+import Simulation.fridge.FridgeModel.Mode;
 import fr.sorbonne_u.devs_simulation.models.AtomicModel;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;

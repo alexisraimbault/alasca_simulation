@@ -1,9 +1,9 @@
-package Simulation;
+package Simulation.fridge;
 
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import Simulation.FridgeModel.State;
+import Simulation.fridge.FridgeModel.State;
 import components.Fridge;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
@@ -22,14 +22,14 @@ import ports.ComponentEPObp;
 import ports.FridgeIbp;
 import ports.LaunchableIbp;
 
-public class FridgeTest 
+public class FridgeSimulationComponent 
 extends		AbstractCyPhyComponent
 implements	EmbeddingComponentStateAccessI{
 	
 	protected FridgeSimulatorPlugin		asp ;
 	
 
-	public			FridgeTest() throws Exception
+	public			FridgeSimulationComponent() throws Exception
 	{
 		// 2 threads to be able to execute tasks and requests while executing
 		// the DEVS simulation.
@@ -39,9 +39,9 @@ implements	EmbeddingComponentStateAccessI{
 
 	}
 
-	protected FridgeTest(String reflectionInboundPortURI) throws Exception
+	protected FridgeSimulationComponent(String reflectionInboundPortURI) throws Exception
 	{
-		super(reflectionInboundPortURI, 1, 0) ;
+		super(reflectionInboundPortURI, 2, 0) ;
 		this.initialise() ;
 	}
 	

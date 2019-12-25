@@ -57,12 +57,12 @@ public class OvenModel extends AtomicHIOAwithEquations {
 
 // creation of a plotter to show the evolution of the intensity over
 // time during the simulation.
-		PlotterDescription pd = new PlotterDescription("Test Consumption", "Time (sec)", "kwh", 100, 0, 600,
+		PlotterDescription pd = new PlotterDescription("Oven Consumption", "Time (sec)", "kwh", 700, 0, 600,
 				400);
 		this.tempPlotter = new XYPlotter(pd);
 		this.tempPlotter.createSeries(SERIES);
 
-		PlotterDescription pd1 = new PlotterDescription("Test Mode", "Time (sec)", "Mode", 100, 400, 600, 400);
+		PlotterDescription pd1 = new PlotterDescription("Oven Mode", "Time (sec)", "Mode", 700, 400, 600, 400);
 		this.modePlotter = new XYPlotter(pd1);
 		this.modePlotter.createSeries(SERIES1);
 
@@ -73,7 +73,7 @@ public class OvenModel extends AtomicHIOAwithEquations {
 	@Override
 	public void setSimulationRunParameters(Map<String, Object> simParams) throws Exception {
 // The reference to the embedding component
-		this.componentRef = (EmbeddingComponentStateAccessI) simParams.get("componentRef");
+		this.componentRef = (EmbeddingComponentStateAccessI) simParams.get("componentRef1");
 		this.delay = new Duration(1.0, this.getSimulatedTimeUnit());
 	}
 
@@ -102,7 +102,7 @@ public class OvenModel extends AtomicHIOAwithEquations {
 
 		try {
 // set the debug level triggering the production of log messages.
-			this.setDebugLevel(0);
+			this.setDebugLevel(1);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -192,8 +192,10 @@ public class OvenModel extends AtomicHIOAwithEquations {
 
 	@Override
 	public Vector<EventI> output() {
+		
 		this.updateTemperature();
 		this.autoControll();
+		
 		return null;
 	}
 

@@ -1,4 +1,4 @@
-package Simulation;
+package Simulation.fridge;
 
 import fr.sorbonne_u.devs_simulation.models.events.Event;
 import fr.sorbonne_u.devs_simulation.models.events.EventInformationI;

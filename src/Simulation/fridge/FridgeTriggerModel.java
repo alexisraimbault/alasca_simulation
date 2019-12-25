@@ -1,4 +1,4 @@
-package Simulation;
+package Simulation.fridge;
 
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;

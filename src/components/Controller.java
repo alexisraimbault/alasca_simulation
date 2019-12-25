@@ -3,7 +3,8 @@ package components;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import Simulation.FridgeModel.State;
+import Simulation.fridge.FridgeModel.State;
+import Simulation.oven.OvenModel.Mode;
 import classes.PlanifiedTask;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
@@ -11,6 +12,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import interfaces.ControllerFridgeI;
+import interfaces.ControllerOvenI;
 import interfaces.ControllerHeaterI;
 import interfaces.ControllerBatteryI;
 import interfaces.ControllerOndulatorI;
@@ -21,13 +23,15 @@ import ports.ControllerEPObp;
 import ports.ControllerFridgeObp;
 import ports.ControllerHeaterObp;
 import ports.ControllerOndulatorObp;
+import ports.ControllerOvenObp;
 import ports.LaunchableIbp;
 
 @OfferedInterfaces(offered = {LaunchableOfferedI.class})
-@RequiredInterfaces(required = {ControllerFridgeI.class, ControllerHeaterI.class, ControllerBatteryI.class, ControllerOndulatorI.class, ControllerEPI.class})
+@RequiredInterfaces(required = {ControllerFridgeI.class, ControllerOvenI.class, ControllerHeaterI.class, ControllerBatteryI.class, ControllerOndulatorI.class, ControllerEPI.class})
 public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	
 	private ControllerFridgeObp towardsFridge;
+	private ControllerOvenObp towardsOven;
 	private ControllerHeaterObp towardsHeater;
 	private ControllerBatteryObp towardsBattery;
 	private ControllerOndulatorObp towardsOndulator;
@@ -35,7 +39,7 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	private LaunchableIbp launchIbp;
 	private ArrayList<PlanifiedTask> tasks;
 
-	protected Controller(String controllerURI, String obpURI, String obpURI2, String obpURI3,  String obpURI4,  String obpURI5, String launchUri) throws Exception {
+	protected Controller(String controllerURI, String obpURI, String obpURI2, String obpURI3,  String obpURI4,  String obpURI5,  String obpURI6, String launchUri) throws Exception {
 		super(controllerURI,  1, 1) ;
 		
 		this.launchIbp = new LaunchableIbp(launchUri, this) ;
@@ -43,6 +47,9 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 		
 		this.towardsFridge = new ControllerFridgeObp(obpURI, this) ;
 		this.towardsFridge.localPublishPort() ;
+		
+		this.towardsOven = new ControllerOvenObp(obpURI6, this) ;
+		this.towardsOven.localPublishPort() ;
 		
 		this.towardsHeater = new ControllerHeaterObp(obpURI4, this) ;
 		this.towardsHeater.localPublishPort() ;
@@ -73,6 +80,13 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 		State state = this.towardsFridge.getFridgeState();
 		//this.logMessage("fridge state : " + state);
 		return state;
+	}
+	
+	public Mode getOvenMode() throws Exception
+	{
+		Mode mode = this.towardsOven.getOvenMode();
+		//this.logMessage("fridge state : " + state);
+		return mode;
 	}
 	
 	public double getFridgeTemperature() throws Exception {
@@ -133,6 +147,7 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 		this.getEPConsommation();
 		this.updateTasks();
 		this.controllFridge();
+		this.controllOven();
 		this.controllHeater();
 		this.controlSPController();
 	}
@@ -142,6 +157,12 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 		this.logMessage("fridge info...");
 		this.logMessage("fridge temperature : " + getFridgeTemperature());
 		this.logMessage("fridge state : " + getFridgeState());
+	}
+	
+	public void controllOven() throws Exception
+	{
+		this.logMessage("oven info...");
+		this.logMessage("oven mode : " + getOvenMode());
 	}
 	
 	public void controllHeater() throws Exception

@@ -1,6 +1,6 @@
 package ports;
 
-import Simulation.FridgeModel.State;
+import Simulation.fridge.FridgeModel.State;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import interfaces.ControllerFridgeI;

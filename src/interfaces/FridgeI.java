@@ -1,6 +1,6 @@
 package interfaces;
 
-import Simulation.FridgeModel.State;
+import Simulation.fridge.FridgeModel.State;
 import fr.sorbonne_u.components.interfaces.OfferedI;
 
 public interface FridgeI extends OfferedI {

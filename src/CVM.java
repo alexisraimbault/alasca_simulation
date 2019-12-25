@@ -5,6 +5,7 @@ import components.ElecPanel;
 import components.Fridge;
 import components.Heater;
 import components.Ondulator;
+import components.Oven;
 import components.SolarPanel;
 import connectors.ComponentEPConnector;
 import connectors.ControllerBatteryConnector;
@@ -24,6 +25,7 @@ extends		AbstractCVM
 {
 	protected static final String	CONTROLLER_URI = "controller-uri" ;
 	protected static final String	FRIDGE_URI = "fridge-uri" ;
+	protected static final String	OVEN_URI = "oven-uri" ;
 	protected static final String	HEATER_URI = "heater-uri" ;
 	protected static final String	EP_URI = "ep-uri" ;
 	protected static final String	CONTROLLER_OBP_URI = "oport" ;
@@ -31,11 +33,14 @@ extends		AbstractCVM
 	protected static final String	CONTROLLER_OBP3_URI = "oport3" ;
 	protected static final String	CONTROLLER_OBP4_URI = "oport4" ;
 	protected static final String	CONTROLLER_OBP5_URI = "oport5" ;
+	protected static final String	CONTROLLER_OBP6_URI = "oport6" ;
 	protected static final String	FRIDGE_IBP_URI = "iport" ;
 	protected static final String	HEATER_IBP_URI = "heater-iport" ;
+	protected static final String	OVEN_IBP_URI = "oven-iport" ;
 	
 	protected static final String	EP_IBP_URI = "ep-iport" ;
 	protected static final String	FRIDGE_EP_URI = "fridge-ep-uri" ;
+	protected static final String	OVEN_EP_URI = "oven-ep-uri" ;
 	protected static final String	HEATER_EP_URI = "heater-ep-uri" ;
 	
 	protected static final String	SP_URI = "sp-uri" ;
@@ -53,6 +58,7 @@ extends		AbstractCVM
 	protected static final String	ONDULATOR_LAUNCH_URI = "ondulator-launch" ;
 	protected static final String	HEATER_LAUNCH_URI = "heater-launch" ;
 	protected static final String	FRIDGE_LAUNCH_URI = "fridge-launch" ;
+	protected static final String	OVEN_LAUNCH_URI = "oven-launch" ;
 	protected static final String	EP_LAUNCH_URI = "ep-launch" ;
 	protected static final String	BATTERY_LAUNCH_URI = "battery-launch" ;
 
@@ -63,6 +69,7 @@ extends		AbstractCVM
 	
 	protected String	controllerURI ;
 	protected String	fridgeURI ;
+	protected String	ovenURI ;
 	protected String	spURI ;
 	protected String	ondulatorURI ;
 	protected String	batteryURI ;
@@ -110,6 +117,7 @@ extends		AbstractCVM
 							CONTROLLER_OBP3_URI,
 							CONTROLLER_OBP4_URI,
 							CONTROLLER_OBP5_URI,
+							CONTROLLER_OBP6_URI,
 							CONTROLLER_LAUNCH_URI}) ;
 		assert	this.isDeployedComponent(this.controllerURI) ;
 		// make it trace its operations
@@ -127,6 +135,19 @@ extends		AbstractCVM
 		// make it trace its operations
 		this.toggleTracing(this.fridgeURI) ;
 		this.toggleLogging(this.fridgeURI) ;
+		
+		
+		this.ovenURI =
+				AbstractComponent.createComponent(
+						Oven.class.getCanonicalName(),
+						new Object[]{OVEN_URI,
+								OVEN_IBP_URI,
+								OVEN_EP_URI,
+								OVEN_LAUNCH_URI}) ;
+		assert	this.isDeployedComponent(this.ovenURI) ;
+		// make it trace its operations
+		this.toggleTracing(this.ovenURI) ;
+		this.toggleLogging(this.ovenURI) ;
 		
 		this.heaterURI =
 				AbstractComponent.createComponent(
@@ -198,6 +219,12 @@ extends		AbstractCVM
 		
 		this.doPortConnection(
 				this.controllerURI,
+				CONTROLLER_OBP6_URI,
+				OVEN_IBP_URI,
+				ControllerFridgeConnector.class.getCanonicalName()) ;
+		
+		this.doPortConnection(
+				this.controllerURI,
 				CONTROLLER_OBP4_URI,
 				HEATER_IBP_URI,
 				ControllerHeaterConnector.class.getCanonicalName()) ;
@@ -241,6 +268,12 @@ extends		AbstractCVM
 		this.doPortConnection(
 				this.fridgeURI,
 				FRIDGE_EP_URI,
+				EP_IBP_URI,
+				ComponentEPConnector.class.getCanonicalName()) ;
+		
+		this.doPortConnection(
+				this.ovenURI,
+				OVEN_EP_URI,
 				EP_IBP_URI,
 				ComponentEPConnector.class.getCanonicalName()) ;
 	

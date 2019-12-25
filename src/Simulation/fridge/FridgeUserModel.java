@@ -1,11 +1,11 @@
-package Simulation;
+package Simulation.fridge;
 
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 
-import Simulation.FridgeModel.State;
+import Simulation.fridge.FridgeModel.State;
 import events.Close;
 import events.Open;
 import events.TriggerTempCheck;
@@ -68,8 +68,8 @@ public class FridgeUserModel extends AtomicES_Model
 							"Fridge State",
 							"Time (sec)",
 							"state",
-							700,
-							0,
+							100,
+							800,
 							600,
 							400) ;
 			this.modePlotter = new XYPlotter(pd) ;
