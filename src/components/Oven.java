@@ -1,6 +1,7 @@
 package components;
 
 import Simulation.oven.OvenSimulationComponent;
+import Simulation.heater.HeaterSimulationComponent;
 import Simulation.oven.OvenModel.Mode;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;

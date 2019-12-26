@@ -40,7 +40,7 @@ public class OvenModel extends AtomicHIOAwithEquations {
 	private static final String SERIES = "temperature";
 	private static final String SERIES1 = "mode";
 
-	public static final String URI = "TestModel";
+	public static final String URI = "OvenModel";
 
 	protected XYPlotter tempPlotter;
 	protected XYPlotter modePlotter;
@@ -102,7 +102,7 @@ public class OvenModel extends AtomicHIOAwithEquations {
 
 		try {
 // set the debug level triggering the production of log messages.
-			this.setDebugLevel(1);
+			this.setDebugLevel(0);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -135,7 +135,7 @@ public class OvenModel extends AtomicHIOAwithEquations {
 // that may access the state of the component object at the same
 // time.
 			try {
-				this.logMessage("component state = " + componentRef.getEmbeddingComponentStateValue("state"));
+				this.logMessage("component state = " + componentRef.getEmbeddingComponentStateValue("mode"));
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}

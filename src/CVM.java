@@ -13,6 +13,7 @@ import connectors.ControllerEPConnector;
 import connectors.ControllerFridgeConnector;
 import connectors.ControllerHeaterConnector;
 import connectors.ControllerOndulatorConnector;
+import connectors.ControllerOvenConnector;
 import connectors.OndulatorBatteryConnector;
 import connectors.SPOndulatorConnector;
 import fr.sorbonne_u.components.AbstractComponent;
@@ -221,7 +222,7 @@ extends		AbstractCVM
 				this.controllerURI,
 				CONTROLLER_OBP6_URI,
 				OVEN_IBP_URI,
-				ControllerFridgeConnector.class.getCanonicalName()) ;
+				ControllerOvenConnector.class.getCanonicalName()) ;
 		
 		this.doPortConnection(
 				this.controllerURI,

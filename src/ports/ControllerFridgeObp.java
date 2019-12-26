@@ -28,7 +28,6 @@ public class ControllerFridgeObp extends AbstractOutboundPort implements Control
 
 	@Override
 	public double getFridgeTemperature() throws Exception {
-		System.out.println("TEST GET FRIDGE TEMP CONTROLLERFRIDGEOBP");
 		return ((ControllerFridgeI)this.connector).getFridgeTemperature() ;
 	}
 
@@ -46,7 +45,6 @@ public class ControllerFridgeObp extends AbstractOutboundPort implements Control
 
 	@Override
 	public State getFridgeState() throws Exception {
-		System.out.println("TEST GET FRIDGE TEMP CONTROLLERFRIDGEOBP");
 		return ((ControllerFridgeI)this.connector).getFridgeState() ;
 	}
 

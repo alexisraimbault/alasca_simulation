@@ -9,7 +9,6 @@ public class ControllerOvenConnector  extends AbstractConnector implements Contr
 
 	@Override
 	public Mode getOvenMode() throws Exception {
-		System.out.println("TEST GET OVEN MODE CONNECTOR");
 		return ((OvenI)this.offering).getMode() ;
 	}
 }

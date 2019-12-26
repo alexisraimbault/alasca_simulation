@@ -1,14 +1,16 @@
-package Simulation.oven;
+package Simulation.heater;
 
+import Simulation.fridge.FridgeModel;
+import events.AbstractFridgeEvent;
 import fr.sorbonne_u.devs_simulation.models.AtomicModel;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 
-public class SetLow extends		AbstractOvenEvent
+public class Close extends		AbstractFridgeEvent
 {
 	private static final long serialVersionUID = 1L;
 	
-	public SetLow(Time timeOfOccurrence)
+	public Close(Time timeOfOccurrence)
 	{
 		super(timeOfOccurrence, null) ;
 	}
@@ -16,7 +18,7 @@ public class SetLow extends		AbstractOvenEvent
 	@Override
 	public String eventAsString()
 	{
-		return "Test::SetLow" ;
+		return "Fridge::Close" ;
 	}
 	
 	@Override
@@ -28,7 +30,8 @@ public class SetLow extends		AbstractOvenEvent
 	@Override
 	public void executeOn(AtomicModel model)
 	{
-		assert	model instanceof OvenModel ;
-		((OvenModel)model).setMode(OvenModel.Mode.LOW) ;
+		assert	model instanceof HeaterModel ;
+
+		((HeaterModel)model).setState(HeaterModel.State.CLOSED) ;
 	}
 }

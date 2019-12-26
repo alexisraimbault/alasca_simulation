@@ -24,7 +24,6 @@ public class ControllerFridgeConnector extends AbstractConnector implements Cont
 
 	@Override
 	public double getFridgeTemperature() throws Exception {
-		System.out.println("TEST GET FRIDGE TEMP CONNECTOR");
 		return ((FridgeI)this.offering).getTemperature() ;
 	}
 

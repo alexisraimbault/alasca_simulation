@@ -30,7 +30,6 @@ public class FridgeIbp extends AbstractInboundPort implements FridgeI{
 
 	@Override
 	public double getTemperature() throws Exception {
-		System.out.println("TEST GET FRIDGE TEMP FRIDGEIBP");
 		return this.owner.handleRequestSync(
 				new AbstractComponent.AbstractService<Double>() {
 					@Override

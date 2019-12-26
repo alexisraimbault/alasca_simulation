@@ -28,7 +28,6 @@ public class SetOff extends		AbstractOvenEvent
 	@Override
 	public void executeOn(AtomicModel model)
 	{
-		System.out.println("SetOff.executeOn : " + model.getClass());
 		if(model instanceof OvenModel)
 			((OvenModel)model).setMode(OvenModel.Mode.OFF) ;
 	}

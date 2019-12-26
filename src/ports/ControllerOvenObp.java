@@ -28,7 +28,6 @@ public class ControllerOvenObp extends AbstractOutboundPort implements Controlle
 
 	@Override
 	public Mode getOvenMode() throws Exception {
-		System.out.println("TEST GET OVEN MODE CONTROLLEROVENOBP");
 		return ((ControllerOvenI)this.connector).getOvenMode() ;
 	}
 }

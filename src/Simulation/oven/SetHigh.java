@@ -28,7 +28,6 @@ public class SetHigh extends		AbstractOvenEvent
 	@Override
 	public void executeOn(AtomicModel model)
 	{
-		System.out.println("SetHigh.executeOn : " + model.getClass());
 		assert	model instanceof OvenModel ;
 
 		((OvenModel)model).setMode(OvenModel.Mode.HIGH) ;

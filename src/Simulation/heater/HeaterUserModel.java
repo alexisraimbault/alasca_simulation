@@ -1,13 +1,11 @@
-package Simulation.oven;
+package Simulation.heater;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 
-import Simulation.oven.OvenModel.Mode;
+import Simulation.heater.HeaterModel.State;
 import fr.sorbonne_u.devs_simulation.es.models.AtomicES_Model;
 import fr.sorbonne_u.devs_simulation.models.annotations.ModelExternalEvents;
 import fr.sorbonne_u.devs_simulation.models.events.EventI;
@@ -15,15 +13,16 @@ import fr.sorbonne_u.devs_simulation.models.time.Duration;
 import fr.sorbonne_u.devs_simulation.models.time.Time;
 import fr.sorbonne_u.devs_simulation.simulators.interfaces.SimulatorI;
 import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
+import fr.sorbonne_u.utils.PlotterDescription;
+import fr.sorbonne_u.utils.XYPlotter;
 
-@ModelExternalEvents(exported = {SetHigh.class,
-		 						SetOff.class,
-		 						SetLow.class})
+@ModelExternalEvents(exported = {Open.class,
+		 						Close.class})
 
-public class OvenUserModel extends AtomicES_Model
+public class HeaterUserModel extends AtomicES_Model
 {
 	private static final long serialVersionUID = 1L ;
-	public static final String	URI = "OvenUserModel" ;
+	public static final String	URI = "FridgeUserModel" ;
 	
 	private static final String		SERIES = "mode" ;
 	
@@ -40,17 +39,17 @@ public class OvenUserModel extends AtomicES_Model
 	
 	protected double	meanTimeBetweenTempUpdate ;
 	/** next event to be sent.												*/
-	protected ArrayList<Double> possibleCookingDurations;
 	protected Class<?>	nextEvent ;
 	
 	protected final RandomDataGenerator		rg ;
 	
-	protected OvenModel.Mode fs ;
+	protected HeaterModel.State fs ;
 	
 	protected boolean initialCall;
 	
+	protected XYPlotter modePlotter ;
 	
-	public OvenUserModel(
+	public HeaterUserModel(
 			String uri,
 			TimeUnit simulatedTimeUnit,
 			SimulatorI simulationEngine
@@ -60,7 +59,17 @@ public class OvenUserModel extends AtomicES_Model
 
 			this.rg = new RandomDataGenerator() ;
 			
-
+			PlotterDescription pd =
+					new PlotterDescription(
+							"Fridge State",
+							"Time (sec)",
+							"state",
+							700,
+							800,
+							600,
+							400) ;
+			this.modePlotter = new XYPlotter(pd) ;
+			this.modePlotter.createSeries(SERIES) ;
 
 			// create a standard logger (logging on the terminal)
 			this.setLogger(new StandardLogger()) ;
@@ -76,17 +85,14 @@ public class OvenUserModel extends AtomicES_Model
 		this.meanTimeAtHigh = 4.0 ;
 		this.meanTimeAtLow = 3.0 ;
 		
-		double[] durationsArray = { 6,0, 8.0};
-		
-		possibleCookingDurations = new ArrayList<Double>();
-		for(double d : durationsArray)
-			possibleCookingDurations.add(d);
-		
 		this.initialCall = true;
 		
 		this.meanTimeBetweenTempUpdate = 7.0;
-		this.fs = OvenModel.Mode.OFF ;
+		this.fs = HeaterModel.State.CLOSED ;
 		
+		this.modePlotter.initialise() ;
+		
+		this.modePlotter.showPlotter() ;
 
 		this.rg.reSeedSecure() ;
 
@@ -103,11 +109,7 @@ public class OvenUserModel extends AtomicES_Model
 											this.rg.nextBeta(1.75, 1.75),
 					this.getSimulatedTimeUnit()) ;
 		Time t = this.getCurrentStateTime().add(d1).add(d2) ;
-		this.scheduleEvent(new SetHigh(t)) ;
-		
-		Collections.shuffle(possibleCookingDurations);
-		Duration d3 = new Duration(this.possibleCookingDurations.get(0), this.getSimulatedTimeUnit());
-		this.scheduleEvent(new SetOff(this.getCurrentStateTime().add(d1).add(d2).add(d3)));
+		this.scheduleEvent(new Open(t)) ;
 		
 		//this.scheduleEvent(new TriggerTempCheck(t)) ;
 
@@ -119,7 +121,7 @@ public class OvenUserModel extends AtomicES_Model
 
 		try {
 			// set the debug level triggering the production of log messages.
-			this.setDebugLevel(0) ;
+			this.setDebugLevel(2) ;
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
 		}
@@ -132,9 +134,12 @@ public class OvenUserModel extends AtomicES_Model
 		// model is given by the earliest time among the currently scheduled
 		// events.
 		Duration d = super.timeAdvance() ;
-		this.logMessage("TestUserModel::timeAdvance() 1 " + d +
+		this.logMessage("FridgeUserModel::timeAdvance() 1 " + d +
 									" " + this.eventListAsString()) ;
-
+		this.modePlotter.addData(
+				SERIES,
+				this.getCurrentStateTime().getSimulatedTime(),
+				state2int(fs));
 		return d ;
 	}
 	
@@ -161,7 +166,7 @@ public class OvenUserModel extends AtomicES_Model
 		// to keep it for the internal transition)
 		this.nextEvent = ret.get(0).getClass() ;
 
-		this.logMessage("TestUserModel::output() " +
+		this.logMessage("FridgeUserModel::output() " +
 									this.nextEvent.getCanonicalName()) ;
 		return ret ;
 	}
@@ -176,85 +181,70 @@ public class OvenUserModel extends AtomicES_Model
 		// and then it starts in low mode, is set in high mode shortly after,
 		// used for a while in high mode and then set back in low mode to
 		// complete the drying.
-		Duration d, d1 ;
+		Duration d ;
 		// See what is the type of event to be executed
 		
-		if (this.nextEvent.equals(SetHigh.class)) {
-			applyState(OvenModel.Mode.HIGH);
+		if (this.nextEvent.equals(Open.class)) {
+			applyState(State.OPEN);
 			// when a switch on event has been issued, plan the next event as
 			// a set high (the hair dryer is switched on in low mode
-			
-			
+			d = new Duration(2.0 * this.rg.nextBeta(1.75, 1.75),
+							 this.getSimulatedTimeUnit()) ;
+			// compute the time of occurrence (in the future)
+			Time t = this.getCurrentStateTime().add(d) ;
+			// schedule the event
+			if(Math.random() < 0.65)
+				this.scheduleEvent(new Close(t)) ;
 			
 			//OPEN (- CLOSE?) ---------- OPEN (- CLOSE ?) ----------- OPEN - CLOSE
 			
 			// also, plan the next switch on for the next day
 			d = new Duration(this.interdayDelay, this.getSimulatedTimeUnit()) ;
-			if(Math.random() < 0.5)
+			this.scheduleEvent(
+						new Open(this.getCurrentStateTime().add(d))) ;
+			
+			
+			/*if(this.initialCall)
 			{
-				this.scheduleEvent(new SetHigh(this.getCurrentStateTime().add(d))) ;
-				
-				Collections.shuffle(possibleCookingDurations);
-				d1 = new Duration(this.possibleCookingDurations.get(0), this.getSimulatedTimeUnit());
-				this.scheduleEvent(new SetOff(this.getCurrentStateTime().add(d).add(d1)));
-			}
-			else {
-				this.scheduleEvent(new SetLow(this.getCurrentStateTime().add(d))) ;
-
-				Collections.shuffle(possibleCookingDurations);
-				d1 = new Duration(this.possibleCookingDurations.get(0), this.getSimulatedTimeUnit());
-				this.scheduleEvent(new SetOff(this.getCurrentStateTime().add(d).add(d1)));
-			}
-				
+				this.logMessage("test initial call...");
+				d = new Duration(this.meanTimeBetweenTempUpdate, this.getSimulatedTimeUnit()) ;
+				this.scheduleEvent(
+							new TriggerTempCheck(this.getCurrentStateTime().add(d))) ;
+				this.initialCall = false;
+			}*/
 		}else{
-			if (this.nextEvent.equals(SetLow.class)) {
-				applyState(OvenModel.Mode.LOW);
-				// when a switch on event has been issued, plan the next event as
-				// a set high (the hair dryer is switched on in low mode
-				
-				//OPEN (- CLOSE?) ---------- OPEN (- CLOSE ?) ----------- OPEN - CLOSE
-				
-				// also, plan the next switch on for the next day
-				d = new Duration(this.interdayDelay, this.getSimulatedTimeUnit()) ;
-				if(Math.random() < 0.5)
-				{
-					this.scheduleEvent(new SetHigh(this.getCurrentStateTime().add(d))) ;
-					
-					Collections.shuffle(possibleCookingDurations);
-					d1 = new Duration(this.possibleCookingDurations.get(0), this.getSimulatedTimeUnit());
-					this.scheduleEvent(new SetOff(this.getCurrentStateTime().add(d).add(d1)));
-				}
-				else {
-					this.scheduleEvent(new SetLow(this.getCurrentStateTime().add(d))) ;
-
-					Collections.shuffle(possibleCookingDurations);
-					d1 = new Duration(this.possibleCookingDurations.get(0), this.getSimulatedTimeUnit());
-					this.scheduleEvent(new SetOff(this.getCurrentStateTime().add(d).add(d1)));
-				}
-			}
-			else {
-				assert this.nextEvent.equals(SetOff.class);
-				applyState(OvenModel.Mode.OFF);
-			}
+			assert this.nextEvent.equals(Close.class);
+			applyState(State.CLOSED);
 		}
 	}
 	
 	
-	public void applyState(Mode s)
+	public static int state2int(State s)
 	{
 		assert	s != null ;
 
-		if (s == Mode.OFF) {
-			fs = Mode.OFF;
+		if (s == State.OPEN) {
+			return 2 ;
 		} else {
-			if(s == Mode.LOW) {
-				fs = Mode.LOW;
-			}
-			else {
-				assert	s == Mode.HIGH;
-				fs = Mode.HIGH;
-			}
+			assert	s == State.CLOSED;
+			return 1 ;
 		}
+	}
+	
+	public void applyState(State s)
+	{
+		assert	s != null ;
+
+		if (s == State.OPEN) {
+			fs = State.OPEN;
+		} else {
+			assert	s == State.CLOSED;
+			fs = State.CLOSED;
+		}
+		this.modePlotter.addData(
+				SERIES,
+				this.getCurrentStateTime().getSimulatedTime(),
+				state2int(fs));
 	}
 	
 }

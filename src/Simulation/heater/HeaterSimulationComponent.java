@@ -1,35 +1,22 @@
-package Simulation.fridge;
+package Simulation.heater;
 
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
-import Simulation.fridge.FridgeModel.State;
-import components.Fridge;
+import Simulation.heater.HeaterModel.State;
 import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cyphy.AbstractCyPhyComponent;
 import fr.sorbonne_u.components.cyphy.interfaces.EmbeddingComponentStateAccessI;
-import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import fr.sorbonne_u.components.exceptions.PostconditionException;
-import fr.sorbonne_u.cyphy.examples.sg.equipments.hairdryer.components.HairDryerSimulatorPlugin;
-import fr.sorbonne_u.cyphy.examples.sg.equipments.hairdryer.models.HairDryerCoupledModel;
-import fr.sorbonne_u.cyphy.examples.sg.equipments.hairdryer.models.HairDryerModel;
 import fr.sorbonne_u.devs_simulation.architectures.Architecture;
 import fr.sorbonne_u.devs_simulation.simulators.SimulationEngine;
-import interfaces.FridgeI;
-import interfaces.LaunchableOfferedI;
-import ports.ComponentEPObp;
-import ports.FridgeIbp;
-import ports.LaunchableIbp;
 
-public class FridgeSimulationComponent 
+public class HeaterSimulationComponent 
 extends		AbstractCyPhyComponent
 implements	EmbeddingComponentStateAccessI{
 	
-	protected FridgeSimulatorPlugin		asp ;
+	protected HeaterSimulatorPlugin		asp ;
 	
 
-	public			FridgeSimulationComponent() throws Exception
+	public			HeaterSimulationComponent() throws Exception
 	{
 		// 2 threads to be able to execute tasks and requests while executing
 		// the DEVS simulation.
@@ -39,7 +26,7 @@ implements	EmbeddingComponentStateAccessI{
 
 	}
 
-	protected FridgeSimulationComponent(String reflectionInboundPortURI) throws Exception
+	protected HeaterSimulationComponent(String reflectionInboundPortURI) throws Exception
 	{
 		super(reflectionInboundPortURI, 2, 0) ;
 		this.initialise() ;
@@ -51,7 +38,7 @@ implements	EmbeddingComponentStateAccessI{
 		// architecture description.
 		Architecture localArchitecture = this.createLocalArchitecture(null) ;
 		// Create the appropriate DEVS simulation plug-in.
-		this.asp = new FridgeSimulatorPlugin() ;
+		this.asp = new HeaterSimulatorPlugin() ;
 		// Set the URI of the plug-in, using the URI of its associated
 		// simulation model.
 		this.asp.setPluginURI(localArchitecture.getRootModelURI()) ;
@@ -66,12 +53,12 @@ implements	EmbeddingComponentStateAccessI{
 
 	@Override
 	public Object getEmbeddingComponentStateValue(String name) throws Exception {
-		return this.asp.getModelStateValue(FridgeModel.URI, "state") + " " + this.asp.getModelStateValue(FridgeModel.URI, "mode") + " " + this.asp.getModelStateValue(FridgeModel.URI, "temperature");
+		return this.asp.getModelStateValue(HeaterModel.URI, "state") + " " + this.asp.getModelStateValue(HeaterModel.URI, "mode") + " " + this.asp.getModelStateValue(HeaterModel.URI, "temperature");
 	}
 
 	@Override
 	protected Architecture createLocalArchitecture(String architectureURI) throws Exception {
-		return FridgeCoupledModel.build() ;
+		return HeaterCoupledModel.build() ;
 	}
 	
 	@Override
@@ -101,18 +88,18 @@ implements	EmbeddingComponentStateAccessI{
 		// to use the simulation model access facility by the component.
 		for (int i = 0 ; i < 100 ; i++) {
 			this.logMessage("Fridge " +
-				this.asp.getModelStateValue(FridgeModel.URI, "state") + " " +
-				this.asp.getModelStateValue(FridgeModel.URI, "temperature")) ;
+				this.asp.getModelStateValue(HeaterModel.URI, "state") + " " +
+				this.asp.getModelStateValue(HeaterModel.URI, "temperature")) ;
 			Thread.sleep(5L) ;
 		}
 	}
 	
 	public double getTemperature() throws Exception {
-		return (double) this.asp.getModelStateValue(FridgeModel.URI, "temperature");
+		return (double) this.asp.getModelStateValue(HeaterModel.URI, "temperature");
 	}
 	
 	public State getState() throws Exception {
-		return (State) this.asp.getModelStateValue(FridgeModel.URI, "state");
+		return (State) this.asp.getModelStateValue(HeaterModel.URI, "state");
 	}
 	
 }
