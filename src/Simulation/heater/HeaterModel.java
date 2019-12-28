@@ -18,16 +18,17 @@ import fr.sorbonne_u.devs_simulation.utils.StandardLogger;
 import fr.sorbonne_u.utils.PlotterDescription;
 import fr.sorbonne_u.utils.XYPlotter;
 
-@ModelExternalEvents(imported = {Open.class,
-								 Close.class})
-
 public class HeaterModel
 extends		AtomicHIOAwithEquations
 {
 	/**
 	 * outside temp -> should change
 	 * 
-	 * AIMED TEMP -> 20 deg
+	 * AIMED TEMP 
+	 * => 20 deg, 
+	 * => between 17 and 23
+	 * => triggers at 18(low)/16(high) and 22(low)/20(high) 
+	 * 
 	 * 
 	 * tRadiateur -> roomTemp/25/35 (on, low, high)
 	 * 
@@ -39,19 +40,14 @@ extends		AtomicHIOAwithEquations
 	 */
 	
 	private static final long serialVersionUID = 1L;
-
-	public static enum State {
-		OPEN,
-		CLOSED
-	}
 	
 	public static enum Mode {
 		OFF,
-		FREEZE,
-		REST
+		LOW,
+		HIGH
 	}
 	
-	private double outsideTemperature = 22.0;
+	private double outsideTemperature = 12.0;
 	
 	private static final String		SERIES = "temperature" ;
 	private static final String		SERIES1 = "mode" ;
@@ -60,8 +56,6 @@ extends		AtomicHIOAwithEquations
 	
 	protected XYPlotter tempPlotter ;
 	protected XYPlotter modePlotter ;
-	
-	protected State currentState;
 	
 	protected Mode currentMode;
 	
@@ -125,9 +119,8 @@ extends		AtomicHIOAwithEquations
 	public void			initialiseState(Time initialTime)
 	{
 		// the hair dryer starts in mode OFF
-		this.currentState = State.CLOSED ;
 		
-		this.currentMode = Mode.REST;
+		this.currentMode = Mode.OFF;
 		// initialisation of the intensity plotter 
 		this.tempPlotter.initialise() ;
 		// show the plotter on the screen
@@ -232,7 +225,7 @@ extends		AtomicHIOAwithEquations
 
 		if (this.hasDebugLevel(2)) {
 			this.logMessage("FridgeModel::userDefinedExternalTransition 3 "
-															+ this.getState()) ;
+															+ this.getMode()) ;
 		}
 
 		// execute the current external event on this model, changing its state
@@ -241,7 +234,7 @@ extends		AtomicHIOAwithEquations
 
 		if (this.hasDebugLevel(1)) {
 			this.logMessage("FridgeModel::userDefinedExternalTransition 4 "
-															+ this.getState()) ;
+															+ this.getMode()) ;
 		}
 
 		// add a new data on the plotter; this data will open a new piece
@@ -269,19 +262,10 @@ extends		AtomicHIOAwithEquations
 		return currentTemp.v;
 	}
 	
-	public void setState(State s)
-	{
-		this.currentState = s ;
-	}
-	
+
 	public void setMode(Mode m)
 	{
 		this.currentMode = m ;
-	}
-	
-	public State		getState()
-	{
-		return this.currentState ;
 	}
 	
 	public Mode		getMode()
@@ -291,22 +275,46 @@ extends		AtomicHIOAwithEquations
 	
 	public void autoControll()
 	{
-		if(this.currentMode == Mode.REST)
+		if(this.currentMode == Mode.OFF)
 		{
-			if(currentTemp.v > 6)
+			if(currentTemp.v < 16)
 			{
-				this.logMessage("FridgeModel::updateTemperature()::FREEZING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") ;
-				setMode(Mode.FREEZE);
+				setMode(Mode.HIGH);
+			}else{
+				if(currentTemp.v < 18)
+				{
+					setMode(Mode.LOW);
+				}
 			}
 		}
-		if(this.currentMode == Mode.FREEZE)
-		{
-			if(currentTemp.v < 4)
+		else{
+			if(this.currentMode == Mode.LOW)
 			{
-				this.logMessage("FridgeModel::updateTemperature()::RESTING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") ;
-				setMode(Mode.REST);
+				if(currentTemp.v < 16)
+				{
+					setMode(Mode.HIGH);
+				}else{
+					if(currentTemp.v > 22)
+					{
+						setMode(Mode.OFF);
+					}
+				}
 			}
+			else{
+				assert this.currentMode == Mode.HIGH;
+				if(currentTemp.v > 20)
+				{
+					setMode(Mode.LOW);
+				}else{
+					if(currentTemp.v > 22)
+					{
+						setMode(Mode.OFF);
+					}
+				}
+			}
+				
 		}
+		
 		
 		this.modePlotter.addData(
 				SERIES1,
@@ -315,27 +323,27 @@ extends		AtomicHIOAwithEquations
 	}
 	
 	public void updateTemperature() {
-		if(this.currentMode == Mode.REST)
+		if(this.currentMode == Mode.OFF)
 		{
-			if(this.currentState == State.CLOSED)
-				currentTemp.v += ((3 - currentTemp.v)/13);
-			else
-			{
-				currentTemp.v += ((outsideTemperature - currentTemp.v)/30);
-				currentTemp.v += ((3 - currentTemp.v)/13);
-			}
-		}
-		if(this.currentMode == Mode.FREEZE)
-		{
-			if(this.currentState == State.CLOSED)
-				currentTemp.v += ((-3 - currentTemp.v)/13);
-			else
-			{
-				currentTemp.v += ((outsideTemperature - currentTemp.v)/30);
-				currentTemp.v += ((-3 - currentTemp.v)/13);
-			}
+			
+			currentTemp.v += ((outsideTemperature - currentTemp.v)/30);
+			
 				
+		}else{
+			if(this.currentMode == Mode.LOW)
+			{
+				
+				currentTemp.v += ((outsideTemperature - currentTemp.v)/30);
+				currentTemp.v += ((25 - currentTemp.v)/20);
+				
+			}else{
+				assert this.currentMode == Mode.HIGH;
+				currentTemp.v += ((outsideTemperature - currentTemp.v)/30);
+				currentTemp.v += ((35 - currentTemp.v)/20);
+			}
 		}
+		
+		
 		this.tempPlotter.addData(
 				SERIES,
 				this.getCurrentStateTime().getSimulatedTime(),
@@ -349,10 +357,10 @@ extends		AtomicHIOAwithEquations
 
 		if (s == Mode.OFF) {
 			return 1 ;
-		} else if (s == Mode.REST) {
+		} else if (s == Mode.LOW) {
 			return 2 ;
 		} else {
-			assert	s == Mode.FREEZE;
+			assert	s == Mode.HIGH;
 			return 3 ;
 		}
 	}

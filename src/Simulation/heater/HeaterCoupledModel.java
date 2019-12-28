@@ -69,35 +69,15 @@ public class HeaterCoupledModel extends CoupledModel
 						TimeUnit.SECONDS,
 						null,
 						SimulationEngineCreationMode.ATOMIC_ENGINE)) ;
-		atomicModelDescriptors.put(
-				HeaterUserModel.URI,
-				AtomicModelDescriptor.create(
-						HeaterUserModel.class,
-						HeaterUserModel.URI,
-						TimeUnit.SECONDS,
-						null,
-						SimulationEngineCreationMode.ATOMIC_ENGINE)) ;
 
 		Map<String,CoupledModelDescriptor> coupledModelDescriptors =
 				new HashMap<String,CoupledModelDescriptor>() ;
 
 		Set<String> submodels = new HashSet<String>() ;
 		submodels.add(HeaterModel.URI) ;
-		submodels.add(HeaterUserModel.URI) ;
 
 		Map<EventSource,EventSink[]> connections =
 									new HashMap<EventSource,EventSink[]>() ;
-		EventSource from1 =
-				new EventSource(HeaterUserModel.URI, Open.class) ;
-		EventSink[] to1 =
-				new EventSink[] {
-						new EventSink(HeaterModel.URI, Open.class)} ;
-		connections.put(from1, to1) ;
-		EventSource from2 =
-				new EventSource(HeaterUserModel.URI, Close.class) ;
-		EventSink[] to2 = new EventSink[] {
-				new EventSink(HeaterModel.URI, Close.class)} ;
-		connections.put(from2, to2) ;
 		
 		coupledModelDescriptors.put(
 					HeaterCoupledModel.URI,

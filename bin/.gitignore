@@ -5,3 +5,5 @@
 /events/
 /interfaces/
 /ports/
+/HeaterSimulationCVM.class
+/OvenSimulationCVM.class

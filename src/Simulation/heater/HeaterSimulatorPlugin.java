@@ -18,16 +18,13 @@ extends		AtomicSimulatorPlugin
 		
 		assert	m instanceof HeaterModel ;
 		
-		if (name.equals("state")) {
-			return ((HeaterModel)m).getState() ;
-		} else {
-			if(name.equals("mode")) {
-				return ((HeaterModel)m).getMode() ;
-			}else
-			{
-				assert	name.equals("temperature") ;
-				return ((HeaterModel)m).getTemp() ;
-			}
+		if(name.equals("mode")) {
+			return ((HeaterModel)m).getMode() ;
+		}else
+		{
+			assert	name.equals("temperature") ;
+			return ((HeaterModel)m).getTemp() ;
 		}
 	}
+	
 }

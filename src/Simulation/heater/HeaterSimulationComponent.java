@@ -2,7 +2,7 @@ package Simulation.heater;
 
 import java.util.HashMap;
 
-import Simulation.heater.HeaterModel.State;
+import Simulation.heater.HeaterModel.Mode;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cyphy.AbstractCyPhyComponent;
 import fr.sorbonne_u.components.cyphy.interfaces.EmbeddingComponentStateAccessI;
@@ -98,8 +98,8 @@ implements	EmbeddingComponentStateAccessI{
 		return (double) this.asp.getModelStateValue(HeaterModel.URI, "temperature");
 	}
 	
-	public State getState() throws Exception {
-		return (State) this.asp.getModelStateValue(HeaterModel.URI, "state");
+	public Mode getMode() throws Exception {
+		return (Mode) this.asp.getModelStateValue(HeaterModel.URI, "mode");
 	}
 	
 }
