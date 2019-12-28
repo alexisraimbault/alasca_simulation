@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import Simulation.fridge.FridgeModel.State;
+import Simulation.heater.HeaterModel;
 import Simulation.oven.OvenModel.Mode;
 import classes.PlanifiedTask;
 import fr.sorbonne_u.components.AbstractComponent;
@@ -95,6 +96,14 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 		return temp;
 	}
 	
+	public double getHeaterTemperature() throws Exception{
+		return this.towardsHeater.getHeaterTemperature();
+	}
+	
+	public HeaterModel.Mode getHeaterMode() throws Exception{
+		return this.towardsHeater.getHeaterMode();
+	}
+	
 	public double getBatteryEnergy() throws Exception {
 		double temp = this.towardsBattery.getBatteryEnergy();
 		this.logMessage("battery energy : " + temp);
@@ -119,16 +128,6 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	public void restFridge() throws Exception {
 		this.logMessage("resting fridge ...");
 		this.towardsFridge.restFridge();
-	}
-	
-	public void switchHeaterOn() throws Exception {
-		this.logMessage("switching heater on...");
-		this.towardsHeater.switchHeaterOn();
-	}
-
-	public void switchHeaterOff() throws Exception {
-		this.logMessage("switching heater off...");
-		this.towardsHeater.switchHeaterOff();
 	}
 	
 	public void setOndulatorPolicy(String policy) throws Exception {
@@ -167,7 +166,9 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	
 	public void controllHeater() throws Exception
 	{
-		//TODO
+		this.logMessage("heater info...");
+		this.logMessage("heater temperature : " + getHeaterTemperature());
+		this.logMessage("heater state : " + getHeaterMode());
 	}
 	
 	public void controlSPController() throws Exception
@@ -318,19 +319,6 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 						}
 					},
 					1000, TimeUnit.MILLISECONDS);
-				
-				this.scheduleTask(
-						new AbstractComponent.AbstractTask() {
-							@Override
-							public void run() {
-								try {
-									((Controller)this.getTaskOwner()).switchHeaterOn();
-								} catch (Exception e) {
-									throw new RuntimeException(e) ;
-								}
-							}
-						},
-						1000, TimeUnit.MILLISECONDS);
 				
 				this.scheduleTask(
 						new AbstractComponent.AbstractTask() {

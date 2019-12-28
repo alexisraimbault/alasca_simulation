@@ -1,5 +1,6 @@
 package ports;
 
+import Simulation.heater.HeaterModel.Mode;
 import components.Heater;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
@@ -27,63 +28,25 @@ public class HeaterIbp extends AbstractInboundPort implements HeaterI {
 	}
 
 	@Override
-	public int getPower() throws Exception {
+	public double getTemperature() throws Exception {
 		return this.owner.handleRequestSync(
-				new AbstractComponent.AbstractService<Integer>() {
+				new AbstractComponent.AbstractService<Double>() {
 					@Override
-					public Integer call() throws Exception {
-						return ((Heater)this.getServiceOwner()).getPower();
+					public Double call() throws Exception {
+						return ((Heater)this.getServiceOwner()).getTemperature();
 					}
 				}) ;
 	}
 
 	@Override
-	public String getState() throws Exception {
+	public Mode getMode() throws Exception {
 		return this.owner.handleRequestSync(
-				new AbstractComponent.AbstractService<String>() {
+				new AbstractComponent.AbstractService<Mode>() {
 					@Override
-					public String call() throws Exception {
-						return ((Heater)this.getServiceOwner()).getState();
+					public Mode call() throws Exception {
+						return ((Heater)this.getServiceOwner()).getMode();
 					}
 				}) ;
 	}
 
-	@Override
-	public void switchOn() throws Exception {
-		this.owner.handleRequestSync(
-				new AbstractComponent.AbstractService<Void>() {
-					@Override
-					public Void call() throws Exception {
-						((Heater)this.getServiceOwner()).switchOn();
-						return null;
-					}
-				}) ;
-		
-	}
-
-	@Override
-	public void switchOff() throws Exception {
-		this.owner.handleRequestSync(
-				new AbstractComponent.AbstractService<Void>() {
-					@Override
-					public Void call() throws Exception {
-						((Heater)this.getServiceOwner()).switchOff();
-						return null;
-					}
-				}) ;
-		
-	}
-
-	@Override
-	public void setPower(int power) throws Exception {
-		this.owner.handleRequestSync(
-				new AbstractComponent.AbstractService<Void>() {
-					@Override
-					public Void call() throws Exception {
-						((Heater)this.getServiceOwner()).setPower(power);
-						return null;
-					}
-				}) ;
-		
-	}
 }

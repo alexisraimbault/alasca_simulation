@@ -1,12 +1,10 @@
 package interfaces;
 
+import Simulation.heater.HeaterModel.Mode;
 import fr.sorbonne_u.components.interfaces.OfferedI;
 
 public interface HeaterI extends OfferedI {
 	
-	public int getPower() throws Exception;
-	public String getState() throws Exception;
-	public void switchOn() throws Exception;
-	public void switchOff() throws Exception;
-	public void setPower(int power) throws Exception;
+	public double getTemperature() throws Exception;
+	public Mode getMode() throws Exception;
 }

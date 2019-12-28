@@ -2,6 +2,9 @@ package components;
 
 import java.util.concurrent.TimeUnit;
 
+import Simulation.heater.HeaterModel.Mode;
+import Simulation.heater.HeaterModel;
+import Simulation.heater.HeaterSimulationComponent;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
@@ -23,9 +26,12 @@ public class Heater extends AbstractComponent implements LaunchableOfferedI {
 	private HeaterIbp ibp;
 	private ComponentEPObp epObp;
 	private LaunchableIbp launchIbp;
+	private HeaterSimulationComponent ht;
 	
 	protected Heater(String heaterURI, String ibpURI, String epURI, String launchUri) throws Exception {
 		super(heaterURI,  1, 1) ;
+		
+		this.ht = new HeaterSimulationComponent();
 
 		this.launchIbp = new LaunchableIbp(launchUri, this) ;
 		this.launchIbp.publishPort() ;
@@ -51,40 +57,40 @@ public class Heater extends AbstractComponent implements LaunchableOfferedI {
 	}
 	
 	public int getPower() throws Exception {
-		return power;
+		return 0;
 	}
 
-	public String getState() throws Exception {
-		return state;
+	public Mode getMode() throws Exception {
+		return ht.getMode();
 	}
+	
+	public double getTemperature() throws Exception {
+		return ht.getTemperature();
+	}
+
 
 	public void switchOn() throws Exception {
-		this.logMessage("switching on.") ;
+		/*this.logMessage("switching on.") ;
 		this.state = "on";
-		EPDeclare();
+		EPDeclare();*/
 	}
 
 	public void switchOff() throws Exception {
-		this.logMessage("switching off.") ;
+		/*this.logMessage("switching off.") ;
 		this.state = "off";
-		EPDeclare();
+		EPDeclare();*/
 	}
 
 	public void setPower(int power) throws Exception {
-		this.power = power;
+		
 	}
 	
 	public void EPRegister() throws Exception {
-		this.logMessage("registring to electric panel.") ;
-		this.epObp.register("heater");
+		
 	}
 	
 	public void EPDeclare() throws Exception {
-		this.logMessage("declaring consommation to electric panel.") ;
-		if(this.state == "on")
-			this.epObp.setConsommation("heater", 4);
-		if(this.state == "off")
-			this.epObp.setConsommation("heater", 0);
+		
 	}
 	
 	@Override
@@ -93,18 +99,6 @@ public class Heater extends AbstractComponent implements LaunchableOfferedI {
 		super.start() ;
 		this.logMessage("starting heater component.") ;
 		
-		this.scheduleTask(
-				new AbstractComponent.AbstractTask() {
-					@Override
-					public void run() {
-						try {
-							((Heater)this.getTaskOwner()).EPRegister();
-						} catch (Exception e) {
-							throw new RuntimeException(e) ;
-						}
-					}
-				},
-				500, TimeUnit.MILLISECONDS);
 		
 	}
 
@@ -132,18 +126,7 @@ public class Heater extends AbstractComponent implements LaunchableOfferedI {
 
 	@Override
 	public void launchTasks() throws Exception {
-		this.scheduleTask(
-				new AbstractComponent.AbstractTask() {
-					@Override
-					public void run() {
-						try {
-							((Heater)this.getTaskOwner()).EPRegister();
-						} catch (Exception e) {
-							throw new RuntimeException(e) ;
-						}
-					}
-				},
-				500, TimeUnit.MILLISECONDS);
+		
 	}
 	
 }

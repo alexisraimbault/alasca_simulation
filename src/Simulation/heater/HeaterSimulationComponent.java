@@ -53,7 +53,7 @@ implements	EmbeddingComponentStateAccessI{
 
 	@Override
 	public Object getEmbeddingComponentStateValue(String name) throws Exception {
-		return this.asp.getModelStateValue(HeaterModel.URI, "state") + " " + this.asp.getModelStateValue(HeaterModel.URI, "mode") + " " + this.asp.getModelStateValue(HeaterModel.URI, "temperature");
+		return this.asp.getModelStateValue(HeaterModel.URI, "mode") + " " + this.asp.getModelStateValue(HeaterModel.URI, "temperature");
 	}
 
 	@Override
