@@ -25,9 +25,9 @@ extends		AtomicHIOAwithEquations
 	 * outside temp -> should change
 	 * 
 	 * AIMED TEMP 
-	 * => 20 deg, 
-	 * => between 17 and 23
-	 * => triggers at 18(low)/16(high) and 22(low)/20(high) 
+	 * => 20 deg
+	 * => tresholds at 18(low)/16(high) and 22(low)/20(high) -> TODO jouer sur ces valeurs -> politique controlleur principal, et fréquence de changement de mode
+	 * 
 	 * 
 	 * 
 	 * tRadiateur -> roomTemp/25/35 (on, low, high)
