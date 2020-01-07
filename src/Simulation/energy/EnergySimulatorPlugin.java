@@ -21,4 +21,28 @@ public class EnergySimulatorPlugin extends		AtomicSimulatorPlugin
 		return ((BatteryModel)m).getBattery() ;
 		
 	}
+	
+	public void setFridgeConsumption(String modelURI, double cons) throws Exception{
+		
+		ModelDescriptionI m = this.simulator.getDescendentModel(modelURI) ;
+		
+		assert	m instanceof BatteryModel ;
+		((BatteryModel)m).setFridgeConsumption(cons);
+	}
+	
+	public void setHeaterConsumption(String modelURI, double cons) throws Exception{
+		
+		ModelDescriptionI m = this.simulator.getDescendentModel(modelURI) ;
+		
+		assert	m instanceof BatteryModel ;
+		((BatteryModel)m).setHeaterConsumption(cons);
+	}
+
+	public void setOvenConsumption(String modelURI, double cons) throws Exception{
+		
+		ModelDescriptionI m = this.simulator.getDescendentModel(modelURI) ;
+		
+		assert	m instanceof BatteryModel ;
+		((BatteryModel)m).setOvenConsumption(cons);
+	}
 }

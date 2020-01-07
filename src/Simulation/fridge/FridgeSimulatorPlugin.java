@@ -30,4 +30,14 @@ extends		AtomicSimulatorPlugin
 			}
 		}
 	}
+	
+	public void setHouseTemp(String modelURI, double temp) throws Exception
+	{
+		// Get a Java reference on the object representing the corresponding
+		// simulation model.
+		ModelDescriptionI m = this.simulator.getDescendentModel(modelURI) ;
+		
+		assert	m instanceof FridgeModel ;
+		((FridgeModel)m).setHouseTemp(temp);
+	}
 }

@@ -30,4 +30,19 @@ public class ControllerBatteryObp extends AbstractOutboundPort implements Contro
 		return ((ControllerBatteryI)this.connector).getBatteryEnergy() ;
 	}
 
+	@Override
+	public void setFridgeCons(double cons) throws Exception {
+		((ControllerBatteryI)this.connector).setFridgeCons(cons) ;
+	}
+
+	@Override
+	public void setHeaterCons(double cons) throws Exception {
+		((ControllerBatteryI)this.connector).setHeaterCons(cons) ;
+	}
+
+	@Override
+	public void setOvenCons(double cons) throws Exception {
+		((ControllerBatteryI)this.connector).setOvenCons(cons) ;
+	}
+
 }

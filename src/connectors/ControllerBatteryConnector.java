@@ -10,4 +10,19 @@ public class ControllerBatteryConnector extends AbstractConnector implements Con
 	public double getBatteryEnergy() throws Exception {
 		return ((BatteryOfferedI)this.offering).getEnergy() ;
 	}
+
+	@Override
+	public void setFridgeCons(double cons) throws Exception {
+		((BatteryOfferedI)this.offering).setFridgeCons(cons) ;
+	}
+
+	@Override
+	public void setHeaterCons(double cons) throws Exception {
+		((BatteryOfferedI)this.offering).setHeaterCons(cons) ;
+	}
+
+	@Override
+	public void setOvenCons(double cons) throws Exception {
+		((BatteryOfferedI)this.offering).setOvenCons(cons) ;
+	}
 }

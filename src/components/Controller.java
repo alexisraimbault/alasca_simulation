@@ -3,6 +3,7 @@ package components;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import Simulation.fridge.FridgeModel;
 import Simulation.fridge.FridgeModel.State;
 import Simulation.heater.HeaterModel;
 import Simulation.oven.OvenModel.Mode;
@@ -76,11 +77,11 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 		this.tracer.setRelativePosition(1, 0) ;
 
 	}
-	public State getFridgeState() throws Exception
+	public FridgeModel.Mode getFridgeState() throws Exception
 	{
-		State state = this.towardsFridge.getFridgeState();
+		FridgeModel.Mode mode = this.towardsFridge.getFridgeState();
 		//this.logMessage("fridge state : " + state);
-		return state;
+		return mode;
 	}
 	
 	public Mode getOvenMode() throws Exception
@@ -153,22 +154,56 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	
 	public void controllFridge() throws Exception
 	{
+		FridgeModel.Mode s = getFridgeState();
 		this.logMessage("fridge info...");
 		this.logMessage("fridge temperature : " + getFridgeTemperature());
-		this.logMessage("fridge state : " + getFridgeState());
+		this.logMessage("fridge state : " + s);
+		
+		if (s == FridgeModel.Mode.OFF) {
+			this.towardsBattery.setFridgeCons(0) ;
+		} else if (s == FridgeModel.Mode.REST) {
+			this.towardsBattery.setFridgeCons(2) ;
+		} else {
+			assert	s == FridgeModel.Mode.FREEZE;
+			this.towardsBattery.setFridgeCons(3) ;
+		}
 	}
 	
 	public void controllOven() throws Exception
 	{
+		Mode s = getOvenMode();
 		this.logMessage("oven info...");
-		this.logMessage("oven mode : " + getOvenMode());
+		this.logMessage("oven mode : " + s);
+		
+		if (s == Mode.OFF) {
+			this.towardsBattery.setOvenCons(0) ;
+		} else if (s == Mode.LOW) {
+			this.towardsBattery.setOvenCons(2) ;
+		} else {
+			assert s == Mode.HIGH;
+			this.towardsBattery.setOvenCons(3) ;
+		}
 	}
 	
 	public void controllHeater() throws Exception
 	{
+		double houseTemp = getHeaterTemperature();
+		HeaterModel.Mode s = getHeaterMode();
 		this.logMessage("heater info...");
-		this.logMessage("heater temperature : " + getHeaterTemperature());
-		this.logMessage("heater state : " + getHeaterMode());
+		this.logMessage("heater temperature : " + houseTemp);
+		this.logMessage("heater state : " + s);
+		
+		this.towardsFridge.setHouseTemp(houseTemp);
+		
+		if (s == HeaterModel.Mode.OFF) {
+			this.towardsBattery.setHeaterCons(0) ;
+		} else if (s == HeaterModel.Mode.LOW) {
+			this.towardsBattery.setHeaterCons(3) ;
+		} else {
+			assert	s == HeaterModel.Mode.HIGH;
+			this.towardsBattery.setHeaterCons(4) ;
+		}
+		
 	}
 	
 	public void controlSPController() throws Exception

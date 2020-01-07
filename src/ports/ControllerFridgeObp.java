@@ -1,5 +1,6 @@
 package ports;
 
+import Simulation.fridge.FridgeModel.Mode;
 import Simulation.fridge.FridgeModel.State;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
@@ -44,7 +45,7 @@ public class ControllerFridgeObp extends AbstractOutboundPort implements Control
 	}
 
 	@Override
-	public State getFridgeState() throws Exception {
+	public Mode getFridgeState() throws Exception {
 		return ((ControllerFridgeI)this.connector).getFridgeState() ;
 	}
 
@@ -56,6 +57,11 @@ public class ControllerFridgeObp extends AbstractOutboundPort implements Control
 	@Override
 	public void restFridge() throws Exception {
 		((ControllerFridgeI)this.connector).restFridge() ;
+	}
+
+	@Override
+	public void setHouseTemp(double temp) throws Exception {
+		((ControllerFridgeI)this.connector).setHouseTemp(temp) ;
 	}
 
 }

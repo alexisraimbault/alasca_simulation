@@ -58,7 +58,7 @@ public class SolarPanelModel extends AtomicES_Model
 		
 		this.meanTimeBetweenTempUpdate = 7.0;
 		
-		this.energyProduced = 20.0;
+		this.energyProduced = 7.0;//TODO 
 
 		super.initialiseState(initialTime) ;
 

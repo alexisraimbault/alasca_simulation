@@ -54,7 +54,7 @@ extends		AtomicHIOAwithEquations
 		REST
 	}
 	
-	private double outsideTemperature = 22.0;
+	private double outsideTemperature = 20.0;
 	
 	private static final String		SERIES = "temperature" ;
 	private static final String		SERIES1 = "mode" ;
@@ -296,7 +296,7 @@ extends		AtomicHIOAwithEquations
 	{
 		if(this.currentMode == Mode.REST)
 		{
-			if(currentTemp.v > 6)
+			if(currentTemp.v > 7)
 			{
 				this.logMessage("FridgeModel::updateTemperature()::FREEZING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") ;
 				setMode(Mode.FREEZE);
@@ -304,7 +304,7 @@ extends		AtomicHIOAwithEquations
 		}
 		if(this.currentMode == Mode.FREEZE)
 		{
-			if(currentTemp.v < 4)
+			if(currentTemp.v < 3)
 			{
 				this.logMessage("FridgeModel::updateTemperature()::RESTING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") ;
 				setMode(Mode.REST);
@@ -358,6 +358,10 @@ extends		AtomicHIOAwithEquations
 			assert	s == Mode.FREEZE;
 			return 3 ;
 		}
+	}
+
+	public void setHouseTemp(double temp) {
+		this.outsideTemperature = temp;
 	}
 
 }

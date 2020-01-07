@@ -45,9 +45,17 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 	protected EmbeddingComponentStateAccessI componentRef;
 
 	protected Duration delay;
+	
+	protected double fridgeConsumption;
+	protected double ovenConsumption;
+	protected double heaterConsumption;
 
 	public BatteryModel(String uri, TimeUnit simulatedTimeUnit, SimulatorI simulationEngine) throws Exception {
 		super(uri, simulatedTimeUnit, simulationEngine);
+		
+		this.fridgeConsumption = 2;
+		this.ovenConsumption = 2;
+		this.heaterConsumption = 2;
 
 		PlotterDescription pd = new PlotterDescription("Remaining Battery", "Time (sec)", "kw", 700, 0, 600,
 				400);
@@ -126,6 +134,12 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 
 
 		ce.executeOn(this);
+		
+		this.currentBattery.v -= this.fridgeConsumption;
+		
+		this.currentBattery.v -= this.heaterConsumption;
+		
+		this.currentBattery.v -= this.ovenConsumption;
 
 
 		super.userDefinedExternalTransition(elapsedTime);
@@ -164,6 +178,18 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 	
 	public double getBattery() {
 		return currentBattery.v;
+	}
+	
+	public void setFridgeConsumption(double cons) {
+		this.fridgeConsumption = cons;
+	}
+	
+	public void setOvenConsumption(double cons) {
+		this.ovenConsumption = cons;
+	}
+	
+	public void setHeaterConsumption(double cons) {
+		this.heaterConsumption = cons;
 	}
 
 }

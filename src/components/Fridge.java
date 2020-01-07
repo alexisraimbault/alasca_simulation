@@ -4,6 +4,7 @@ package components;
 import java.util.concurrent.TimeUnit;
 
 import Simulation.fridge.FridgeSimulationComponent;
+import Simulation.fridge.FridgeModel.Mode;
 import Simulation.fridge.FridgeModel.State;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
@@ -86,6 +87,10 @@ public class Fridge extends AbstractComponent implements LaunchableOfferedI {
 		return ft.getState();
 	}
 	
+	public void setHouseTemp(double temp) throws Exception {
+		ft.setHouseTemp(temp);
+	}
+	
 	public void switchOn() throws Exception {
 			
 	}
@@ -155,6 +160,10 @@ public class Fridge extends AbstractComponent implements LaunchableOfferedI {
 	@Override
 	public void launchTasks() throws Exception {
 		
+	}
+
+	public Mode getMode() throws Exception {
+		return ft.getMode();
 	}
 }
 //-----------------------------------------------------------------------------

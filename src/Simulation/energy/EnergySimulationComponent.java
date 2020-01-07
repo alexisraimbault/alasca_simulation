@@ -96,4 +96,16 @@ implements	EmbeddingComponentStateAccessI{
 		return (double) this.asp.getModelStateValue(BatteryModel.URI, "battery");
 	}
 	
+	public void setFridgeCons(double cons) throws Exception {
+		this.asp.setFridgeConsumption(BatteryModel.URI, cons);
+	}
+	
+	public void setOvenCons(double cons) throws Exception {
+		this.asp.setOvenConsumption(BatteryModel.URI, cons);
+	}
+	
+	public void setHeaterCons(double cons) throws Exception {
+		this.asp.setHeaterConsumption(BatteryModel.URI, cons);
+	}
+	
 }

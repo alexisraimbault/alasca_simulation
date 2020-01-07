@@ -3,6 +3,7 @@ package Simulation.fridge;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import Simulation.fridge.FridgeModel.Mode;
 import Simulation.fridge.FridgeModel.State;
 import components.Fridge;
 import fr.sorbonne_u.components.AbstractComponent;
@@ -113,6 +114,14 @@ implements	EmbeddingComponentStateAccessI{
 	
 	public State getState() throws Exception {
 		return (State) this.asp.getModelStateValue(FridgeModel.URI, "state");
+	}
+	
+	public void setHouseTemp(double temp) throws Exception {
+		this.asp.setHouseTemp(FridgeModel.URI, temp);
+	}
+
+	public Mode getMode() throws Exception {
+		return (Mode) this.asp.getModelStateValue(FridgeModel.URI, "mode");
 	}
 	
 }

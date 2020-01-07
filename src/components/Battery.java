@@ -1,5 +1,6 @@
 package components;
 
+import Simulation.energy.EnergySimulationComponent;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
@@ -18,6 +19,7 @@ public class Battery extends AbstractComponent implements LaunchableOfferedI {
 	
 	private BatteryIbp ibp;
 	private LaunchableIbp launchIbp;
+	private EnergySimulationComponent ft;
 	
 	protected Battery(String batteryURI, String ibpURI, String launchUri) throws Exception {
 		super(batteryURI,  1, 1) ;
@@ -29,6 +31,8 @@ public class Battery extends AbstractComponent implements LaunchableOfferedI {
 		this.ibp.publishPort() ;
 		
 		this.energy = 0;
+		
+		this.ft = new EnergySimulationComponent();
 		
 		if (AbstractCVM.isDistributed) {
 			this.executionLog.setDirectory(System.getProperty("user.dir")) ;
@@ -82,5 +86,17 @@ public class Battery extends AbstractComponent implements LaunchableOfferedI {
 	public void launchTasks() throws Exception {
 		// nothing
 		
+	}
+	
+	public void setFridgeCons(double cons) throws Exception{
+		ft.setFridgeCons(cons);
+	}
+	
+	public void setHeaterCons(double cons) throws Exception{
+		ft.setHeaterCons(cons);
+	}
+	
+	public void setOvenCons(double cons) throws Exception{
+		ft.setOvenCons(cons);
 	}
 }

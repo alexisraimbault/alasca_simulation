@@ -52,7 +52,7 @@ extends		AtomicHIOAwithEquations
 	private static final String		SERIES = "temperature" ;
 	private static final String		SERIES1 = "mode" ;
 	
-	public static final String		URI = "FridgeModel" ;
+	public static final String		URI = "HeaterModel" ;
 	
 	protected XYPlotter tempPlotter ;
 	protected XYPlotter modePlotter ;

@@ -49,6 +49,42 @@ public class BatteryIbp extends AbstractInboundPort implements BatteryOfferedI{
 					}
 				}) ;
 	}
+
+	@Override
+	public void setFridgeCons(double cons) throws Exception {
+		this.owner.handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((Battery)this.getServiceOwner()).setFridgeCons(cons) ;
+						return null;
+					}
+				}) ;
+	}
+
+	@Override
+	public void setHeaterCons(double cons) throws Exception {
+		this.owner.handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((Battery)this.getServiceOwner()).setHeaterCons(cons) ;
+						return null;
+					}
+				}) ;
+	}
+
+	@Override
+	public void setOvenCons(double cons) throws Exception {
+		this.owner.handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((Battery)this.getServiceOwner()).setOvenCons(cons) ;
+						return null;
+					}
+				}) ;
+	}
 }
 
 

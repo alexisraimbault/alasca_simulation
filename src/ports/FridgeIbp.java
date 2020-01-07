@@ -1,5 +1,6 @@
 package ports;
 
+import Simulation.fridge.FridgeModel.Mode;
 import Simulation.fridge.FridgeModel.State;
 import components.Fridge;
 import fr.sorbonne_u.components.AbstractComponent;
@@ -40,12 +41,12 @@ public class FridgeIbp extends AbstractInboundPort implements FridgeI{
 	}
 
 	@Override
-	public State getState() throws Exception {
+	public Mode getState() throws Exception {
 		return this.owner.handleRequestSync(
-				new AbstractComponent.AbstractService<State>() {
+				new AbstractComponent.AbstractService<Mode>() {
 					@Override
-					public State call() throws Exception {
-						return ((Fridge)this.getServiceOwner()).getState() ;
+					public Mode call() throws Exception {
+						return ((Fridge)this.getServiceOwner()).getMode() ;
 					}
 				}) ;
 	}
@@ -96,6 +97,18 @@ public class FridgeIbp extends AbstractInboundPort implements FridgeI{
 						return null;
 					}
 				}) ;
+	}
+
+	@Override
+	public void setHouseTemp(double temp) throws Exception {
+			this.owner.handleRequestSync(
+					new AbstractComponent.AbstractService<Void>() {
+						@Override
+						public Void call() throws Exception {
+							((Fridge)this.getServiceOwner()).setHouseTemp(temp) ;
+							return null;
+						}
+					}) ;
 	}
 
 }
