@@ -10,6 +10,7 @@ public interface ControllerFridgeI extends RequiredI{
 	public void switchFridgeOff() throws Exception;
 	Mode getFridgeState() throws Exception;
 	public void setHouseTemp(double temp) throws Exception;
+	public void setLowBattery(boolean isLow) throws Exception ;
 	void freezeFridge() throws Exception;
 	void restFridge() throws Exception;
 }

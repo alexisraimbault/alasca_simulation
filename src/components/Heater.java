@@ -129,4 +129,9 @@ public class Heater extends AbstractComponent implements LaunchableOfferedI {
 		
 	}
 	
+	public void setLowBattery(boolean isLow) throws Exception 
+	{
+		ht.setLowBattery(isLow);
+	}
+	
 }

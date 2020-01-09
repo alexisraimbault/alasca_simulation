@@ -57,8 +57,7 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 		this.ovenConsumption = 2;
 		this.heaterConsumption = 2;
 
-		PlotterDescription pd = new PlotterDescription("Remaining Battery", "Time (sec)", "kw", 700, 0, 600,
-				400);
+		PlotterDescription pd = new PlotterDescription("Remaining Battery", "Time (sec)", "kw", 700, 800, 600, 400);
 		this.batteryPlotter = new XYPlotter(pd);
 		this.batteryPlotter.createSeries(SERIES);
 

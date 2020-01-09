@@ -165,6 +165,11 @@ public class Fridge extends AbstractComponent implements LaunchableOfferedI {
 	public Mode getMode() throws Exception {
 		return ft.getMode();
 	}
+	
+	public void setLowBattery(boolean isLow) throws Exception 
+	{
+		ft.setBatteryLow(isLow);
+	}
 }
 //-----------------------------------------------------------------------------
 

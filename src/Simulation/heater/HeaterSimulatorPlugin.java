@@ -27,4 +27,12 @@ extends		AtomicSimulatorPlugin
 		}
 	}
 	
+	public void setLowBattery(String modelURI, boolean isLow) throws Exception
+	{
+		ModelDescriptionI m = this.simulator.getDescendentModel(modelURI) ;
+		
+		assert	m instanceof HeaterModel ;
+		((HeaterModel)m).setBatteryLow(isLow);
+	}
+	
 }

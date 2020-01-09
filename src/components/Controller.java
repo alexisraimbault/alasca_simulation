@@ -40,9 +40,12 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	private ControllerEPObp towardsEP;
 	private LaunchableIbp launchIbp;
 	private ArrayList<PlanifiedTask> tasks;
+	private boolean isBatteryLow;
 
 	protected Controller(String controllerURI, String obpURI, String obpURI2, String obpURI3,  String obpURI4,  String obpURI5,  String obpURI6, String launchUri) throws Exception {
 		super(controllerURI,  1, 1) ;
+		
+		this.isBatteryLow = false;
 		
 		this.launchIbp = new LaunchableIbp(launchUri, this) ;
 		this.launchIbp.publishPort() ;
@@ -146,6 +149,7 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 		this.logMessage("STEPPING...");
 		this.getEPConsommation();
 		this.updateTasks();
+		this.controllBattery();
 		this.controllFridge();
 		this.controllOven();
 		this.controllHeater();
@@ -204,6 +208,27 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 			this.towardsBattery.setHeaterCons(4) ;
 		}
 		
+	}
+	
+	public void controllBattery() throws Exception{
+		double battery = this.towardsBattery.getBatteryEnergy();
+		this.logMessage("battery info ...");
+		this.logMessage("remaining battery : " + battery);
+		if(!isBatteryLow && battery < 10 )
+		{
+			this.logMessage("economy mode, battery low ");
+			this.isBatteryLow = true;
+			this.towardsFridge.setLowBattery(true);
+			this.towardsHeater.setLowBattery(true);
+		}
+		
+		if(isBatteryLow && battery > 10 )
+		{
+			this.logMessage("normal mode, battery ok ");
+			this.isBatteryLow = false;
+			this.towardsFridge.setLowBattery(false);
+			this.towardsHeater.setLowBattery(false);
+		}
 	}
 	
 	public void controlSPController() throws Exception

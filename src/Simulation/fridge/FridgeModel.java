@@ -42,6 +42,9 @@ extends		AtomicHIOAwithEquations
 	 */
 	
 	private static final long serialVersionUID = 1L;
+	
+	private boolean lowBattery;
+	private double lowThreshold, highThreshold, lowBatteryLowThreshold, lowBatteryHighThreshold;
 
 	public static enum State {
 		OPEN,
@@ -81,6 +84,13 @@ extends		AtomicHIOAwithEquations
 			) throws Exception
 	{
 		super(uri, simulatedTimeUnit, simulationEngine) ;
+		
+		this.lowBattery = false;
+		
+		this.lowThreshold = 3;
+		this.highThreshold = 7;
+		this.lowBatteryLowThreshold = 5;
+		this.lowBatteryLowThreshold = 9;
 
 		// creation of a plotter to show the evolution of the intensity over
 		// time during the simulation.
@@ -294,22 +304,42 @@ extends		AtomicHIOAwithEquations
 	
 	public void autoControll()
 	{
-		if(this.currentMode == Mode.REST)
-		{
-			if(currentTemp.v > 7)
+		if(this.lowBattery) {
+			if(this.currentMode == Mode.REST)
 			{
-				this.logMessage("FridgeModel::updateTemperature()::FREEZING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") ;
-				setMode(Mode.FREEZE);
+				if(currentTemp.v > lowBatteryHighThreshold)
+				{
+					this.logMessage("FridgeModel::updateTemperature()::FREEZING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") ;
+					setMode(Mode.FREEZE);
+				}
+			}
+			if(this.currentMode == Mode.FREEZE)
+			{
+				if(currentTemp.v < lowBatteryLowThreshold)
+				{
+					this.logMessage("FridgeModel::updateTemperature()::RESTING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") ;
+					setMode(Mode.REST);
+				}
+			}
+		}else {
+			if(this.currentMode == Mode.REST)
+			{
+				if(currentTemp.v > highThreshold)
+				{
+					this.logMessage("FridgeModel::updateTemperature()::FREEZING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") ;
+					setMode(Mode.FREEZE);
+				}
+			}
+			if(this.currentMode == Mode.FREEZE)
+			{
+				if(currentTemp.v < lowThreshold)
+				{
+					this.logMessage("FridgeModel::updateTemperature()::RESTING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") ;
+					setMode(Mode.REST);
+				}
 			}
 		}
-		if(this.currentMode == Mode.FREEZE)
-		{
-			if(currentTemp.v < 3)
-			{
-				this.logMessage("FridgeModel::updateTemperature()::RESTING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") ;
-				setMode(Mode.REST);
-			}
-		}
+		
 		
 		this.modePlotter.addData(
 				SERIES1,
@@ -362,6 +392,11 @@ extends		AtomicHIOAwithEquations
 
 	public void setHouseTemp(double temp) {
 		this.outsideTemperature = temp;
+	}
+	
+	public void setBatteryLow(boolean isLow)
+	{
+		this.lowBattery = isLow;
 	}
 
 }

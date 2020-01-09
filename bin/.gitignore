@@ -1,3 +1,4 @@
+/EnergySimulationCVM.class
 /Simulation/
 /classes/
 /components/
@@ -5,6 +6,3 @@
 /events/
 /interfaces/
 /ports/
-/HeaterSimulationCVM.class
-/OvenSimulationCVM.class
-/EnergySimulationCVM.class

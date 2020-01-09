@@ -119,7 +119,11 @@ implements	EmbeddingComponentStateAccessI{
 	public void setHouseTemp(double temp) throws Exception {
 		this.asp.setHouseTemp(FridgeModel.URI, temp);
 	}
-
+	
+	public void setBatteryLow(boolean isLow) throws Exception {
+		this.asp.setLowBattery(FridgeModel.URI, isLow);
+	}
+	
 	public Mode getMode() throws Exception {
 		return (Mode) this.asp.getModelStateValue(FridgeModel.URI, "mode");
 	}

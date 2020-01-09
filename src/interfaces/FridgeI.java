@@ -8,6 +8,7 @@ public interface FridgeI extends OfferedI {
 	public double getTemperature() throws Exception;
 	public Mode getState() throws Exception;
 	public void setHouseTemp(double temp) throws Exception;
+	public void setLowBattery(boolean isLow) throws Exception;
 	public void switchOn() throws Exception;
 	public void switchOff() throws Exception;
 	public void freeze() throws Exception;

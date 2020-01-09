@@ -111,4 +111,16 @@ public class FridgeIbp extends AbstractInboundPort implements FridgeI{
 					}) ;
 	}
 
+	@Override
+	public void setLowBattery(boolean isLow) throws Exception {
+		this.owner.handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((Fridge)this.getServiceOwner()).setLowBattery(isLow) ;
+						return null;
+					}
+				}) ;
+	}
+
 }

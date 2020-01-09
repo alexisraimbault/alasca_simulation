@@ -31,4 +31,9 @@ public class ControllerHeaterObp extends AbstractOutboundPort implements Control
 		public Mode getHeaterMode() throws Exception {
 			return ((ControllerHeaterI)this.connector).getHeaterMode() ;
 		}
+
+		@Override
+		public void setLowBattery(boolean isLow) throws Exception {
+			((ControllerHeaterI)this.connector).setLowBattery(isLow) ;
+		}
 }

@@ -47,6 +47,12 @@ extends		AtomicHIOAwithEquations
 		HIGH
 	}
 	
+	private boolean lowBattery;
+	
+	private double offThreshold1, offThreshold2,lowBatteryOffThreshold1, lowBatteryOffThreshold2;
+	private double lowThreshold1, lowThreshold2,lowBatteryLowThreshold1, lowBatteryLowThreshold2;
+	private double highThreshold1, highThreshold2,lowBatteryHighThreshold1, lowBatteryHighThreshold2;
+	
 	private double outsideTemperature = 12.0;
 	
 	private static final String		SERIES = "temperature" ;
@@ -73,6 +79,21 @@ extends		AtomicHIOAwithEquations
 	{
 		super(uri, simulatedTimeUnit, simulationEngine) ;
 
+		lowBattery = false;
+		
+		offThreshold1 = 16;
+		offThreshold2 = 18;
+		lowBatteryOffThreshold1 = 12;
+		lowBatteryOffThreshold2 = 14;
+		lowThreshold1 = 17;
+		lowThreshold2 = 22;
+		lowBatteryLowThreshold1 = 12;
+		lowBatteryLowThreshold2 = 18;
+		highThreshold1 = 20;
+		highThreshold2 = 22;
+		lowBatteryHighThreshold1 = 16;
+		lowBatteryHighThreshold2 = 18;
+		
 		// creation of a plotter to show the evolution of the intensity over
 		// time during the simulation.
 		PlotterDescription pd =
@@ -275,45 +296,89 @@ extends		AtomicHIOAwithEquations
 	
 	public void autoControll()
 	{
-		if(this.currentMode == Mode.OFF)
+		if(lowBattery)
 		{
-			if(currentTemp.v < 16)
+			if(this.currentMode == Mode.OFF)
 			{
-				setMode(Mode.HIGH);
-			}else{
-				if(currentTemp.v < 18)
-				{
-					setMode(Mode.LOW);
-				}
-			}
-		}
-		else{
-			if(this.currentMode == Mode.LOW)
-			{
-				if(currentTemp.v < 16)
+				if(currentTemp.v < lowBatteryOffThreshold1)
 				{
 					setMode(Mode.HIGH);
 				}else{
-					if(currentTemp.v > 22)
+					if(currentTemp.v < lowBatteryOffThreshold2)
 					{
-						setMode(Mode.OFF);
+						setMode(Mode.LOW);
 					}
 				}
 			}
 			else{
-				assert this.currentMode == Mode.HIGH;
-				if(currentTemp.v > 20)
+				if(this.currentMode == Mode.LOW)
 				{
-					setMode(Mode.LOW);
-				}else{
-					if(currentTemp.v > 22)
+					if(currentTemp.v < lowBatteryLowThreshold1)
 					{
-						setMode(Mode.OFF);
+						setMode(Mode.HIGH);
+					}else{
+						if(currentTemp.v > lowBatteryLowThreshold2)
+						{
+							setMode(Mode.OFF);
+						}
+					}
+				}
+				else{
+					assert this.currentMode == Mode.HIGH;
+					if(currentTemp.v > lowBatteryHighThreshold1)
+					{
+						setMode(Mode.LOW);
+					}else{
+						if(currentTemp.v > lowBatteryHighThreshold2)
+						{
+							setMode(Mode.OFF);
+						}
+					}
+				}
+					
+			}
+		}else {
+			if(this.currentMode == Mode.OFF)
+			{
+				if(currentTemp.v < offThreshold1)
+				{
+					setMode(Mode.HIGH);
+				}else{
+					if(currentTemp.v < offThreshold2)
+					{
+						setMode(Mode.LOW);
 					}
 				}
 			}
-				
+			else{
+				if(this.currentMode == Mode.LOW)
+				{
+					if(currentTemp.v < lowThreshold1)
+					{
+						setMode(Mode.HIGH);
+					}else{
+						if(currentTemp.v > lowThreshold2)
+						{
+							setMode(Mode.OFF);
+						}
+					}
+				}
+				else{
+					assert this.currentMode == Mode.HIGH;
+					if(currentTemp.v > highThreshold1)
+					{
+						setMode(Mode.LOW);
+					}else{
+						if(currentTemp.v > highThreshold2)
+						{
+							setMode(Mode.OFF);
+						}
+					}
+				}
+					
+			}
 		}
+		
 		
 		
 		this.modePlotter.addData(
@@ -326,19 +391,19 @@ extends		AtomicHIOAwithEquations
 		if(this.currentMode == Mode.OFF)
 		{
 			
-			currentTemp.v += ((outsideTemperature - currentTemp.v)/30);
+			currentTemp.v += ((outsideTemperature - currentTemp.v)/10);
 			
 				
 		}else{
 			if(this.currentMode == Mode.LOW)
 			{
 				
-				currentTemp.v += ((outsideTemperature - currentTemp.v)/30);
+				currentTemp.v += ((outsideTemperature - currentTemp.v)/10);
 				currentTemp.v += ((25 - currentTemp.v)/20);
 				
 			}else{
 				assert this.currentMode == Mode.HIGH;
-				currentTemp.v += ((outsideTemperature - currentTemp.v)/30);
+				currentTemp.v += ((outsideTemperature - currentTemp.v)/10);
 				currentTemp.v += ((35 - currentTemp.v)/20);
 			}
 		}
@@ -364,5 +429,9 @@ extends		AtomicHIOAwithEquations
 			return 3 ;
 		}
 	}
-
+	
+	public void setBatteryLow(boolean isLow)
+	{
+		this.lowBattery = isLow;
+	}
 }

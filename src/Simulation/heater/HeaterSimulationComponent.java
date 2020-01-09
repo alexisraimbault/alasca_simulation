@@ -102,4 +102,8 @@ implements	EmbeddingComponentStateAccessI{
 		return (Mode) this.asp.getModelStateValue(HeaterModel.URI, "mode");
 	}
 	
+	public void setLowBattery(boolean isLow) throws Exception{
+		this.asp.setLowBattery(HeaterModel.URI, isLow);
+	}
+	
 }

@@ -42,4 +42,9 @@ public class ControllerFridgeConnector extends AbstractConnector implements Cont
 		((FridgeI)this.offering).setHouseTemp(temp) ;
 	}
 
+	@Override
+	public void setLowBattery(boolean isLow) throws Exception {
+		((FridgeI)this.offering).setLowBattery(isLow) ;
+	}
+
 }

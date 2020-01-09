@@ -49,4 +49,16 @@ public class HeaterIbp extends AbstractInboundPort implements HeaterI {
 				}) ;
 	}
 
+	@Override
+	public void setLowBattery(boolean isLow) throws Exception {
+		this.owner.handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((Heater)this.getServiceOwner()).setLowBattery(isLow);
+						return null;
+					}
+				}) ;
+	}
+
 }

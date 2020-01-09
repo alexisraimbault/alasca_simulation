@@ -15,7 +15,6 @@ import ports.LaunchableIbp;
 @OfferedInterfaces(offered = {BatteryOfferedI.class, LaunchableOfferedI.class})
 @RequiredInterfaces(required = {BatteryRequiredI.class})
 public class Battery extends AbstractComponent implements LaunchableOfferedI {
-	public double energy;
 	
 	private BatteryIbp ibp;
 	private LaunchableIbp launchIbp;
@@ -30,7 +29,6 @@ public class Battery extends AbstractComponent implements LaunchableOfferedI {
 		this.ibp = new BatteryIbp(ibpURI, this) ;
 		this.ibp.publishPort() ;
 		
-		this.energy = 0;
 		
 		this.ft = new EnergySimulationComponent();
 		
@@ -46,12 +44,11 @@ public class Battery extends AbstractComponent implements LaunchableOfferedI {
 	}
 
 	public void store(double power) {
-		energy += power;
-		this.logMessage("storing " + power + " energy...");
+		
 	}
 
-	public Double getEnergy() {
-		return energy;
+	public Double getEnergy() throws Exception {
+		return ft.getBattery();
 	}
 	
 	@Override

@@ -17,4 +17,9 @@ public class ControllerHeaterConnector extends AbstractConnector implements Cont
 		return ((HeaterI)this.offering).getMode() ;
 	}
 
+	@Override
+	public void setLowBattery(boolean isLow) throws Exception {
+		((HeaterI)this.offering).setLowBattery(isLow) ;
+	}
+
 }

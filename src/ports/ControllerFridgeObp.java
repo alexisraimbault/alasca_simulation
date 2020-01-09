@@ -64,4 +64,9 @@ public class ControllerFridgeObp extends AbstractOutboundPort implements Control
 		((ControllerFridgeI)this.connector).setHouseTemp(temp) ;
 	}
 
+	@Override
+	public void setLowBattery(boolean isLow) throws Exception {
+		((ControllerFridgeI)this.connector).setLowBattery(isLow) ;
+	}
+
 }
