@@ -199,14 +199,12 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 
 	public void charge(double energy, double balance)
 	{
-		System.out.println("TEST : charging : " + energy + " and storing : " + balance);
 		this.currentBattery.v = Math.min(this.currentBattery.v + energy, nbBatteries*singleBatteryCapacity );
 		this.currentBalance.v += balance;
 	}
 	
 	public void consume(double energy)
 	{
-		System.out.println("TEST : consuming : " + energy );
 		this.currentBattery.v -= energy;
 	}
 	

@@ -166,7 +166,7 @@ extends		AtomicHIOAwithEquations
 
 		try {
 			// set the debug level triggering the production of log messages.
-			this.setDebugLevel(2) ;
+			this.setDebugLevel(0) ;
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
 		}

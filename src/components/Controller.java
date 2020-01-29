@@ -29,6 +29,7 @@ import ports.ControllerHeaterObp;
 import ports.ControllerOndulatorObp;
 import ports.ControllerOvenObp;
 import ports.LaunchableIbp;
+import ui.Fenetre;
 
 @OfferedInterfaces(offered = {LaunchableOfferedI.class})
 @RequiredInterfaces(required = {ControllerFridgeI.class, ControllerOvenI.class, ControllerHeaterI.class, ControllerBatteryI.class, ControllerOndulatorI.class, ControllerEPI.class})
@@ -54,9 +55,11 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	private int SPPolicyState = 0;//0->keep, 1->middle, 2->sell
 	
 	protected Controller(String controllerURI, String obpURI, String obpURI2, String obpURI3,  String obpURI4,  String obpURI5,  String obpURI6, String launchUri) throws Exception {
-		super(controllerURI,  1, 1) ;
+		super(controllerURI,  2, 1) ;
 		
 		this.isBatteryLow = false;
+		
+		
 		
 		this.launchIbp = new LaunchableIbp(launchUri, this) ;
 		this.launchIbp.publishPort() ;
@@ -89,6 +92,8 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 		
 		this.tracer.setTitle("controller") ;
 		this.tracer.setRelativePosition(1, 0) ;
+		
+		Fenetre fen = new Fenetre(this);
 
 	}
 	public FridgeModel.Mode getFridgeState() throws Exception
@@ -113,6 +118,11 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	
 	public double getHeaterTemperature() throws Exception{
 		return this.towardsHeater.getHeaterTemperature();
+	}
+	
+	public void setHeaterAimedTemp(double temp) throws Exception
+	{
+		this.towardsHeater.setHeaterAimedTemp(temp);
 	}
 	
 	public HeaterModel.Mode getHeaterMode() throws Exception{
@@ -158,7 +168,6 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	public void step() throws Exception
 	{
 		this.logMessage("STEPPING...");
-		this.getEPConsommation();
 		this.updateTasks();
 		this.controllBattery();
 		this.controllFridge();
@@ -296,26 +305,44 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	
 	public void updateTasks() throws Exception 
 	{
-		for(PlanifiedTask t : tasks)
+		this.logMessage("updating tasks...");
+		if(!tasks.isEmpty())
 		{
-			if(t.iterations-- <= 0 )
+			this.logMessage("updating tasks inside condition1");
+			for(PlanifiedTask t : tasks)
 			{
-				switch(t.operation)
+				this.logMessage("updating tasks inside loop");
+				if(!t.executed)
 				{
-					case COOK_HIGH :
-						this.towardsOven.setOvenMode(OvenModel.Mode.HIGH);
-						this.tasks.add(new PlanifiedTask(0, t.value, Operations.STOP_COOKING, 1));
-						break;
-					case COOK_LOW :
-						this.towardsOven.setOvenMode(OvenModel.Mode.LOW);
-						this.tasks.add(new PlanifiedTask(0, t.value, Operations.STOP_COOKING, 1));
-						break;
-					case SET_HEATER_GOAL :
-						this.towardsHeater.setHeaterAimedTemp(t.value);
-						break;
-					case STOP_COOKING :
-						this.towardsOven.setOvenMode(OvenModel.Mode.OFF);
-						break;
+					this.logMessage("updating tasks inside condition 2");
+					this.logMessage("analyzing task : " + t.operation);
+					this.logMessage("remaining iterations : " + t.iterations);
+					t.iterations--;
+					if(t.iterations <= 0 )
+					{
+						switch(t.operation)
+						{
+							case COOK_HIGH :
+								this.towardsOven.setOvenMode(OvenModel.Mode.HIGH);
+								t.iterations = t.value;
+								t.value = 0;
+								t.operation = Operations.STOP_COOKING;
+								break;
+							case COOK_LOW :
+								this.towardsOven.setOvenMode(OvenModel.Mode.LOW);
+								t.iterations = t.value;
+								t.value = 0;
+								t.operation = Operations.STOP_COOKING;
+								break;
+							case STOP_COOKING :
+								t.executed = true;
+								this.towardsOven.setOvenMode(OvenModel.Mode.OFF);
+								break;
+							default:
+								break;
+						}
+					}
+					
 				}
 			}
 		}

@@ -103,11 +103,11 @@ public class OvenUserModel extends AtomicES_Model
 											this.rg.nextBeta(1.75, 1.75),
 					this.getSimulatedTimeUnit()) ;
 		Time t = this.getCurrentStateTime().add(d1).add(d2) ;
-		this.scheduleEvent(new SetHigh(t)) ;
+		//this.scheduleEvent(new SetHigh(t)) ;
 		
 		Collections.shuffle(possibleCookingDurations);
 		Duration d3 = new Duration(this.possibleCookingDurations.get(0), this.getSimulatedTimeUnit());
-		this.scheduleEvent(new SetOff(this.getCurrentStateTime().add(d1).add(d2).add(d3)));
+		//this.scheduleEvent(new SetOff(this.getCurrentStateTime().add(d1).add(d2).add(d3)));
 		
 		//this.scheduleEvent(new TriggerTempCheck(t)) ;
 
