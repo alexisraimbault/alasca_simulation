@@ -108,4 +108,8 @@ implements	EmbeddingComponentStateAccessI{
 		this.asp.setHeaterConsumption(BatteryModel.URI, cons);
 	}
 	
+	public void setSPPolicy(double policy) throws Exception {
+		this.asp.setSPPolicy(SolarPanelModel.URI, policy);
+	}
+	
 }

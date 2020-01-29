@@ -85,6 +85,18 @@ public class BatteryIbp extends AbstractInboundPort implements BatteryOfferedI{
 					}
 				}) ;
 	}
+
+	@Override
+	public void setSPPolicy(double policy) throws Exception {
+		this.owner.handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((Battery)this.getServiceOwner()).setSPPolicy(policy) ;
+						return null;
+					}
+				}) ;
+	}
 }
 
 

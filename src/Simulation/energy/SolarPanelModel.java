@@ -29,7 +29,11 @@ public class SolarPanelModel extends AtomicES_Model
 	
 	protected double energyProduced;
 	
+	protected double energyValue;
+	
 	protected boolean initialCall;
+	
+	private double storagePolicy; //between 0 and 1, the percentage of produced battery that we store, we sell the rest
 	
 	
 	public SolarPanelModel(
@@ -41,7 +45,6 @@ public class SolarPanelModel extends AtomicES_Model
 			super(uri, simulatedTimeUnit, simulationEngine) ;
 			
 
-
 			// create a standard logger (logging on the terminal)
 			this.setLogger(new StandardLogger()) ;
 		}
@@ -49,6 +52,8 @@ public class SolarPanelModel extends AtomicES_Model
 	@Override
 	public void			initialiseState(Time initialTime) 
 	{
+		this.storagePolicy = 1;
+		this.energyValue = 1.0;
 		
 		this.initialDelay = 10.0 ;
 		this.interdayDelay = 100.0 ;
@@ -58,7 +63,7 @@ public class SolarPanelModel extends AtomicES_Model
 		
 		this.meanTimeBetweenTempUpdate = 7.0;
 		
-		this.energyProduced = 7.0;//TODO 
+		this.energyProduced = 9.0;//TODO 
 
 		super.initialiseState(initialTime) ;
 
@@ -66,7 +71,7 @@ public class SolarPanelModel extends AtomicES_Model
 							this.initialDelay,
 							this.getSimulatedTimeUnit()) ;
 		Time t = this.getCurrentStateTime().add(d1);
-		this.scheduleEvent(new Charge(t, this.energyProduced)) ;
+		this.scheduleCharge(t);
 		
 
 		
@@ -94,6 +99,11 @@ public class SolarPanelModel extends AtomicES_Model
 									" " + this.eventListAsString()) ;
 
 		return d ;
+	}
+	
+	public void scheduleCharge(Time t)
+	{
+		this.scheduleEvent(new Charge(t, this.energyProduced * this.storagePolicy, this.energyProduced * (1-this.storagePolicy))) ;
 	}
 	
 	@Override
@@ -137,9 +147,13 @@ public class SolarPanelModel extends AtomicES_Model
 			
 			// also, plan the next switch on for the next day
 			d = new Duration(this.interdayDelay, this.getSimulatedTimeUnit()) ;
-			this.scheduleEvent(new Charge(this.getCurrentStateTime().add(d), this.energyProduced)) ;
+			this.scheduleCharge(this.getCurrentStateTime().add(d));
 		}
 	}
 	
+	public void setStoragePolicy(double policy)
+	{
+		this.storagePolicy = policy;
+	}
 
 }

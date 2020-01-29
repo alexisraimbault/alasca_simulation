@@ -45,4 +45,9 @@ public class ControllerBatteryObp extends AbstractOutboundPort implements Contro
 		((ControllerBatteryI)this.connector).setOvenCons(cons) ;
 	}
 
+	@Override
+	public void setSPPolicy(double policy) throws Exception {
+		((ControllerBatteryI)this.connector).setSPPolicy(policy) ;
+	}
+
 }

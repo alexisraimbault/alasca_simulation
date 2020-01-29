@@ -45,4 +45,12 @@ public class EnergySimulatorPlugin extends		AtomicSimulatorPlugin
 		assert	m instanceof BatteryModel ;
 		((BatteryModel)m).setOvenConsumption(cons);
 	}
+	
+	public void setSPPolicy(String modelURI, double policy) throws Exception{
+		
+		ModelDescriptionI m = this.simulator.getDescendentModel(modelURI) ;
+		
+		assert	m instanceof SolarPanelModel ;
+		((SolarPanelModel)m).setStoragePolicy(policy);
+	}
 }

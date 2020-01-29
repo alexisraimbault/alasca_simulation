@@ -8,11 +8,13 @@ public class Charge extends AbstractBatteryEvent{
 
 	private static final long serialVersionUID = 1L;
 	private double energy;
+	private double balance;
 	
-	public Charge(Time timeOfOccurrence, double energy)
+	public Charge(Time timeOfOccurrence, double energy, double balance)
 	{
 		super(timeOfOccurrence, null) ;
 		this.energy = energy;
+		this.balance = balance;
 	}
 	
 	@Override
@@ -32,6 +34,6 @@ public class Charge extends AbstractBatteryEvent{
 	{
 		assert	model instanceof BatteryModel ;
 
-		((BatteryModel)model).charge(energy) ;
+		((BatteryModel)model).charge(energy, balance) ;
 	}
 }

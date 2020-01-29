@@ -10,4 +10,6 @@ public interface BatteryOfferedI extends OfferedI{
 	public void setHeaterCons(double cons) throws Exception;
 	
 	public void setOvenCons(double cons) throws Exception;
+	
+	public void setSPPolicy(double policy) throws Exception;
 }

@@ -32,15 +32,22 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 	 */
 
 	private static final long serialVersionUID = 1L;
+	
+	private int nbBatteries;
+	private double singleBatteryCapacity;
+	private double batteryCost;
 
 
 	private static final String SERIES = "battery";
+	private static final String SERIES1 = "balance";
 
 	public static final String URI = "BatteryModel";
 
 	protected XYPlotter batteryPlotter;
+	protected XYPlotter balancePlotter;
 
 	protected final Value<Double> currentBattery = new Value<Double>(this, 0.0, 0) ;
+	protected final Value<Double> currentBalance = new Value<Double>(this, 0.0, 0) ;
 
 	protected EmbeddingComponentStateAccessI componentRef;
 
@@ -53,6 +60,11 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 	public BatteryModel(String uri, TimeUnit simulatedTimeUnit, SimulatorI simulationEngine) throws Exception {
 		super(uri, simulatedTimeUnit, simulationEngine);
 		
+		nbBatteries = 1;
+		singleBatteryCapacity = 50;
+		batteryCost = 100;
+		currentBalance.v = 0.0;
+		
 		this.fridgeConsumption = 2;
 		this.ovenConsumption = 2;
 		this.heaterConsumption = 2;
@@ -60,6 +72,10 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 		PlotterDescription pd = new PlotterDescription("Remaining Battery", "Time (sec)", "kw", 700, 800, 600, 400);
 		this.batteryPlotter = new XYPlotter(pd);
 		this.batteryPlotter.createSeries(SERIES);
+		
+		PlotterDescription pd1 = new PlotterDescription("Remaining Balance", "Time (sec)", "euros", 1400, 800, 600, 400);
+		this.balancePlotter = new XYPlotter(pd1);
+		this.balancePlotter.createSeries(SERIES1);
 
 
 		this.setLogger(new StandardLogger());
@@ -75,6 +91,9 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 	public void initialiseState(Time initialTime) {
 		this.batteryPlotter.initialise();
 		this.batteryPlotter.showPlotter();
+		
+		this.balancePlotter.initialise();
+		this.balancePlotter.showPlotter();
 
 
 
@@ -91,13 +110,25 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 	protected void initialiseVariables(Time startTime) {
 
 		this.batteryPlotter.addData(SERIES, this.getCurrentStateTime().getSimulatedTime(), currentBattery.v);
-
+		this.balancePlotter.addData(SERIES1, this.getCurrentStateTime().getSimulatedTime(), currentBalance.v);
 
 		super.initialiseVariables(startTime);
 	}
 
-	public Duration timeAdvance() {
+	public Duration timeAdvance() 
+	{
 		return this.delay;
+	}
+	
+	public void tryBuyBattery()
+	{
+		
+		if(currentBalance.v > batteryCost)
+		{
+			System.out.println("TEST : BUYING NEW BATTERY !!!!!!");
+			currentBalance.v -= batteryCost;
+			nbBatteries ++;
+		}
 	}
 
 	@Override
@@ -149,7 +180,7 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 
 	@Override
 	public Vector<EventI> output() {
-		
+		this.tryBuyBattery();
 		this.updateBattery();
 		this.autoControll();
 		
@@ -163,15 +194,19 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 	public void updateBattery() {
 
 		this.batteryPlotter.addData(SERIES, this.getCurrentStateTime().getSimulatedTime(), currentBattery.v);
+		this.balancePlotter.addData(SERIES1, this.getCurrentStateTime().getSimulatedTime(), currentBalance.v);
 	}
 
-	public void charge(double energy)
+	public void charge(double energy, double balance)
 	{
-		this.currentBattery.v += energy;
+		System.out.println("TEST : charging : " + energy + " and storing : " + balance);
+		this.currentBattery.v = Math.min(this.currentBattery.v + energy, nbBatteries*singleBatteryCapacity );
+		this.currentBalance.v += balance;
 	}
 	
 	public void consume(double energy)
 	{
+		System.out.println("TEST : consuming : " + energy );
 		this.currentBattery.v -= energy;
 	}
 	

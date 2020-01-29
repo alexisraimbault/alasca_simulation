@@ -43,7 +43,16 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	private LaunchableIbp launchIbp;
 	private ArrayList<PlanifiedTask> tasks;
 	private boolean isBatteryLow;
-
+	
+	private double SPPolicyKeep = 1.0;
+	private double SPPolicyMiddle = 0.5;
+	private double SPPolicySell = 0.0;
+	
+	private double SPPolicySellThreshold = 50;
+	private double SPPolicyMiddleThreshold = 30;
+	
+	private int SPPolicyState = 0;//0->keep, 1->middle, 2->sell
+	
 	protected Controller(String controllerURI, String obpURI, String obpURI2, String obpURI3,  String obpURI4,  String obpURI5,  String obpURI6, String launchUri) throws Exception {
 		super(controllerURI,  1, 1) ;
 		
@@ -211,6 +220,7 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 		}
 		
 	}
+
 	
 	public void controllBattery() throws Exception{
 		double battery = this.towardsBattery.getBatteryEnergy();
@@ -230,6 +240,52 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 			this.isBatteryLow = false;
 			this.towardsFridge.setLowBattery(false);
 			this.towardsHeater.setLowBattery(false);
+		}
+		
+		//controll SPPolicy
+		
+		switch(SPPolicyState)
+		{
+			case 0:
+				if(battery >= SPPolicySellThreshold)
+				{
+					this.towardsBattery.setSPPolicy(SPPolicySell);
+					this.SPPolicyState = 2;
+				}else{
+					if(battery >= SPPolicyMiddleThreshold)
+					{
+						this.towardsBattery.setSPPolicy(SPPolicyMiddle);
+						this.SPPolicyState = 1;
+					}
+				}
+				break;
+			case 1:
+				if(battery >= SPPolicySellThreshold)
+				{
+					this.towardsBattery.setSPPolicy(SPPolicySell);
+					this.SPPolicyState = 2;
+				}else{
+					if(battery <= SPPolicyMiddleThreshold)
+					{
+						this.towardsBattery.setSPPolicy(SPPolicyKeep);
+						this.SPPolicyState = 0;
+					}
+				}
+				
+				break;
+			case 2:
+				if(battery <= SPPolicyMiddleThreshold)
+				{
+					this.towardsBattery.setSPPolicy(SPPolicyKeep);
+					this.SPPolicyState = 0;
+				}else{
+					if(battery <= SPPolicySellThreshold)
+					{
+						this.towardsBattery.setSPPolicy(SPPolicyMiddle);
+						this.SPPolicyState = 1;
+					}
+				}
+				break;
 		}
 	}
 	

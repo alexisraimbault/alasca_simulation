@@ -25,4 +25,9 @@ public class ControllerBatteryConnector extends AbstractConnector implements Con
 	public void setOvenCons(double cons) throws Exception {
 		((BatteryOfferedI)this.offering).setOvenCons(cons) ;
 	}
+
+	@Override
+	public void setSPPolicy(double policy) throws Exception {
+		((BatteryOfferedI)this.offering).setSPPolicy(policy) ;
+	}
 }

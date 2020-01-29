@@ -96,4 +96,8 @@ public class Battery extends AbstractComponent implements LaunchableOfferedI {
 	public void setOvenCons(double cons) throws Exception{
 		ft.setOvenCons(cons);
 	}
+	
+	public void setSPPolicy(double policy) throws Exception{
+		ft.setSPPolicy(policy);
+	}
 }
