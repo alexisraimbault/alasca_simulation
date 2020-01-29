@@ -38,4 +38,16 @@ public class OvenIbp  extends AbstractInboundPort implements OvenI{
 					}
 				}) ;
 	}
+
+	@Override
+	public void setMode(Mode mode) throws Exception {
+		this.owner.handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((Oven)this.getServiceOwner()).setMode(mode) ;
+						return null;
+					}
+				}) ;
+	}
 }

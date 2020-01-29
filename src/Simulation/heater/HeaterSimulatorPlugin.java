@@ -35,4 +35,12 @@ extends		AtomicSimulatorPlugin
 		((HeaterModel)m).setBatteryLow(isLow);
 	}
 	
+	public void setAimedTemp(String modelURI, double temp) throws Exception
+	{
+		ModelDescriptionI m = this.simulator.getDescendentModel(modelURI) ;
+		
+		assert	m instanceof HeaterModel ;
+		((HeaterModel)m).setAimedTemp(temp);
+	}
+	
 }

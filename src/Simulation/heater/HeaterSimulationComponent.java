@@ -106,4 +106,8 @@ implements	EmbeddingComponentStateAccessI{
 		this.asp.setLowBattery(HeaterModel.URI, isLow);
 	}
 	
+	public void setAimedTemp(double temp) throws Exception{
+		this.asp.setAimedTemp(HeaterModel.URI, temp);
+	}
+	
 }

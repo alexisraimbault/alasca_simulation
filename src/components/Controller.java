@@ -6,7 +6,9 @@ import java.util.concurrent.TimeUnit;
 import Simulation.fridge.FridgeModel;
 import Simulation.fridge.FridgeModel.State;
 import Simulation.heater.HeaterModel;
+import Simulation.oven.OvenModel;
 import Simulation.oven.OvenModel.Mode;
+import classes.Operations;
 import classes.PlanifiedTask;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
@@ -233,18 +235,33 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	
 	public void controlSPController() throws Exception
 	{
-		//TODO
+		//TODO send energy if we have spare, keep track of the policy
 	}
 	
-	public void updateTasks() 
+	public void updateTasks() throws Exception 
 	{
 		for(PlanifiedTask t : tasks)
 		{
 			if(t.iterations-- <= 0 )
 			{
-				//TODO
+				switch(t.operation)
+				{
+					case COOK_HIGH :
+						this.towardsOven.setOvenMode(OvenModel.Mode.HIGH);
+						this.tasks.add(new PlanifiedTask(0, t.value, Operations.STOP_COOKING, 1));
+						break;
+					case COOK_LOW :
+						this.towardsOven.setOvenMode(OvenModel.Mode.LOW);
+						this.tasks.add(new PlanifiedTask(0, t.value, Operations.STOP_COOKING, 1));
+						break;
+					case SET_HEATER_GOAL :
+						this.towardsHeater.setHeaterAimedTemp(t.value);
+						break;
+					case STOP_COOKING :
+						this.towardsOven.setOvenMode(OvenModel.Mode.OFF);
+						break;
+				}
 			}
-			
 		}
 	}
 	

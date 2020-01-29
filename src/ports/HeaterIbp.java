@@ -61,4 +61,16 @@ public class HeaterIbp extends AbstractInboundPort implements HeaterI {
 				}) ;
 	}
 
+	@Override
+	public void setAimedTemp(double temp) throws Exception {
+		this.owner.handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((Heater)this.getServiceOwner()).setAimedTemp(temp);
+						return null;
+					}
+				}) ;
+	}
+
 }

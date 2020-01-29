@@ -89,7 +89,9 @@ public class Oven extends AbstractComponent implements LaunchableOfferedI {
 		
 	}
 	
-
+	public void setMode(Mode mode) throws Exception {
+		ft.setMode(mode);
+	}
 	
 	public void EPRegister() throws Exception {
 		

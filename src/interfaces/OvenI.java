@@ -5,4 +5,5 @@ import fr.sorbonne_u.components.interfaces.OfferedI;
 
 public interface OvenI extends OfferedI {
 	public Mode getMode() throws Exception;
+	public void setMode(Mode mode) throws Exception;
 }

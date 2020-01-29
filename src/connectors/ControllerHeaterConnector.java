@@ -22,4 +22,9 @@ public class ControllerHeaterConnector extends AbstractConnector implements Cont
 		((HeaterI)this.offering).setLowBattery(isLow) ;
 	}
 
+	@Override
+	public void setHeaterAimedTemp(double temp) throws Exception {
+		((HeaterI)this.offering).setAimedTemp(temp) ;
+	}
+
 }

@@ -8,4 +8,5 @@ public interface HeaterI extends OfferedI {
 	public double getTemperature() throws Exception;
 	public Mode getMode() throws Exception;
 	public void setLowBattery(boolean isLow) throws Exception ;
+	public void setAimedTemp(double temp) throws Exception;
 }

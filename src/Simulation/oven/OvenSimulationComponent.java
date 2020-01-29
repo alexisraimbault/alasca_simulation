@@ -98,4 +98,8 @@ implements	EmbeddingComponentStateAccessI{
 		return (Mode) this.asp.getModelStateValue(OvenModel.URI, "mode");
 	}
 	
+	public void setMode(Mode mode) throws Exception {
+		this.asp.setModelMode(OvenModel.URI, mode);
+	}
+	
 }

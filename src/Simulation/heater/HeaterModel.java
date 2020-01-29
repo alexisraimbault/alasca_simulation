@@ -434,4 +434,20 @@ extends		AtomicHIOAwithEquations
 	{
 		this.lowBattery = isLow;
 	}
+	
+	public void setAimedTemp(double temp)
+	{
+		offThreshold1 = temp - 4;
+		offThreshold2 = temp - 2;
+		lowBatteryOffThreshold1 = temp - 8;
+		lowBatteryOffThreshold2 = temp - 6;
+		lowThreshold1 = temp - 3;
+		lowThreshold2 = temp + 2;
+		lowBatteryLowThreshold1 = temp - 8;
+		lowBatteryLowThreshold2 = temp - 2;
+		highThreshold1 = temp;
+		highThreshold2 = temp +2;
+		lowBatteryHighThreshold1 = temp - 4;
+		lowBatteryHighThreshold2 = temp - 2;
+	}
 }

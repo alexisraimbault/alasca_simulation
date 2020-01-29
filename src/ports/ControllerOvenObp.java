@@ -30,4 +30,9 @@ public class ControllerOvenObp extends AbstractOutboundPort implements Controlle
 	public Mode getOvenMode() throws Exception {
 		return ((ControllerOvenI)this.connector).getOvenMode() ;
 	}
+
+	@Override
+	public void setOvenMode(Mode mode) throws Exception {
+		((ControllerOvenI)this.connector).setOvenMode(mode) ;
+	}
 }

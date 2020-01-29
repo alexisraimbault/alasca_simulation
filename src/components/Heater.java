@@ -67,6 +67,11 @@ public class Heater extends AbstractComponent implements LaunchableOfferedI {
 	public double getTemperature() throws Exception {
 		return ht.getTemperature();
 	}
+	
+	public void setAimedTemp(double temp) throws Exception
+	{
+		ht.setAimedTemp(temp);
+	}
 
 
 	public void switchOn() throws Exception {
