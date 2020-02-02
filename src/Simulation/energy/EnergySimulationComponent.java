@@ -111,5 +111,9 @@ implements	EmbeddingComponentStateAccessI{
 	public void setSPPolicy(double policy) throws Exception {
 		this.asp.setSPPolicy(SolarPanelModel.URI, policy);
 	}
+
+	public double getStorageCapacity() throws Exception {
+		return this.asp.getStorageCapacity(BatteryModel.URI);
+	}
 	
 }

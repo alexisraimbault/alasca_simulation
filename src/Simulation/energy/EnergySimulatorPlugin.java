@@ -53,4 +53,11 @@ public class EnergySimulatorPlugin extends		AtomicSimulatorPlugin
 		assert	m instanceof SolarPanelModel ;
 		((SolarPanelModel)m).setStoragePolicy(policy);
 	}
+
+	public double getStorageCapacity(String modelURI) throws Exception{
+		ModelDescriptionI m = this.simulator.getDescendentModel(modelURI) ;
+		
+		assert	m instanceof BatteryModel ;
+		return ((BatteryModel)m).getStorageCapacity();
+	}
 }

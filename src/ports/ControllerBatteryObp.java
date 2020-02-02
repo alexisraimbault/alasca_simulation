@@ -50,4 +50,9 @@ public class ControllerBatteryObp extends AbstractOutboundPort implements Contro
 		((ControllerBatteryI)this.connector).setSPPolicy(policy) ;
 	}
 
+	@Override
+	public double getStorageCapacity() throws Exception {
+		return ((ControllerBatteryI)this.connector).getStorageCapacity() ;
+	}
+
 }

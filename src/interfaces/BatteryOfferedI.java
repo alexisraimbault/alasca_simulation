@@ -12,4 +12,6 @@ public interface BatteryOfferedI extends OfferedI{
 	public void setOvenCons(double cons) throws Exception;
 	
 	public void setSPPolicy(double policy) throws Exception;
+	
+	public double getStorageCapacity() throws Exception;
 }

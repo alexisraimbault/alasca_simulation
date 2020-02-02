@@ -27,7 +27,10 @@ public class SolarPanelModel extends AtomicES_Model
 	/** next event to be sent.												*/
 	protected Class<?>	nextEvent ;
 	
-	protected double energyProduced;
+	protected double energyProducedCycleFactor;//inversement proportionnel
+	protected double energyProducedAmplitudeFactor;
+	protected double energyProducedYShift;
+	protected double energyProducedXShift;
 	
 	protected double energyValue;
 	
@@ -63,7 +66,11 @@ public class SolarPanelModel extends AtomicES_Model
 		
 		this.meanTimeBetweenTempUpdate = 7.0;
 		
-		this.energyProduced = 9.0;//TODO 
+		this.energyProducedCycleFactor = 0.0005;//inversement proportionnel
+		this.energyProducedAmplitudeFactor = 5.0 ;
+		this.energyProducedYShift = 6.0;
+		this.energyProducedXShift = 0.1;
+
 
 		super.initialiseState(initialTime) ;
 
@@ -103,7 +110,14 @@ public class SolarPanelModel extends AtomicES_Model
 	
 	public void scheduleCharge(Time t)
 	{
-		this.scheduleEvent(new Charge(t, this.energyProduced * this.storagePolicy, this.energyProduced * (1-this.storagePolicy))) ;
+		double producedEnergy = getEnergyProduced();
+		System.out.println("producing : " + producedEnergy + " time : " + this.currentStateTime.getSimulatedTime());
+		this.scheduleEvent(new Charge(t, producedEnergy * this.storagePolicy, producedEnergy * (1-this.storagePolicy))) ;
+	}
+	
+	public double getEnergyProduced()
+	{
+		return Math.max(4.0,this.energyProducedAmplitudeFactor * Math.sin(this.currentStateTime.getSimulatedTime() * this.energyProducedCycleFactor + energyProducedXShift) + this.energyProducedYShift);
 	}
 	
 	@Override

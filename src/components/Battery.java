@@ -100,4 +100,8 @@ public class Battery extends AbstractComponent implements LaunchableOfferedI {
 	public void setSPPolicy(double policy) throws Exception{
 		ft.setSPPolicy(policy);
 	}
+	
+	public double getStorageCapacity() throws Exception{
+		return ft.getStorageCapacity();
+	}
 }

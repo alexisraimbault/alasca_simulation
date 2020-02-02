@@ -224,4 +224,8 @@ public class BatteryModel extends AtomicHIOAwithEquations {
 		this.heaterConsumption = cons;
 	}
 
+	public double getStorageCapacity() {
+		return this.nbBatteries*this.singleBatteryCapacity;
+	}
+
 }

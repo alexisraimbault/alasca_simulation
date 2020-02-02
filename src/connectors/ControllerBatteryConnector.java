@@ -30,4 +30,9 @@ public class ControllerBatteryConnector extends AbstractConnector implements Con
 	public void setSPPolicy(double policy) throws Exception {
 		((BatteryOfferedI)this.offering).setSPPolicy(policy) ;
 	}
+
+	@Override
+	public double getStorageCapacity() throws Exception {
+		return ((BatteryOfferedI)this.offering).getStorageCapacity() ;
+	}
 }

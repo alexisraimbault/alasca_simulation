@@ -49,8 +49,10 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 	private double SPPolicyMiddle = 0.5;
 	private double SPPolicySell = 0.0;
 	
-	private double SPPolicySellThreshold = 50;
-	private double SPPolicyMiddleThreshold = 30;
+	private double SPPolicySellThreshold = 0.85;
+	private double SPPolicyMiddleThreshold = 0.70;
+	
+	private double lowBatteryThreshold = 0.5;
 	
 	private int SPPolicyState = 0;//0->keep, 1->middle, 2->sell
 	
@@ -232,10 +234,12 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 
 	
 	public void controllBattery() throws Exception{
+		double batteryCapacity = this.towardsBattery.getStorageCapacity();
 		double battery = this.towardsBattery.getBatteryEnergy();
+		
 		this.logMessage("battery info ...");
 		this.logMessage("remaining battery : " + battery);
-		if(!isBatteryLow && battery < 10 )
+		if(!isBatteryLow && battery < batteryCapacity*lowBatteryThreshold )
 		{
 			this.logMessage("economy mode, battery low ");
 			this.isBatteryLow = true;
@@ -243,7 +247,7 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 			this.towardsHeater.setLowBattery(true);
 		}
 		
-		if(isBatteryLow && battery > 10 )
+		if(isBatteryLow && battery > batteryCapacity*lowBatteryThreshold )
 		{
 			this.logMessage("normal mode, battery ok ");
 			this.isBatteryLow = false;
@@ -253,15 +257,17 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 		
 		//controll SPPolicy
 		
+		
+		
 		switch(SPPolicyState)
 		{
 			case 0:
-				if(battery >= SPPolicySellThreshold)
+				if(battery >= batteryCapacity*SPPolicySellThreshold)
 				{
 					this.towardsBattery.setSPPolicy(SPPolicySell);
 					this.SPPolicyState = 2;
 				}else{
-					if(battery >= SPPolicyMiddleThreshold)
+					if(battery >= batteryCapacity*SPPolicyMiddleThreshold)
 					{
 						this.towardsBattery.setSPPolicy(SPPolicyMiddle);
 						this.SPPolicyState = 1;
@@ -269,12 +275,12 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 				}
 				break;
 			case 1:
-				if(battery >= SPPolicySellThreshold)
+				if(battery >= batteryCapacity*SPPolicySellThreshold)
 				{
 					this.towardsBattery.setSPPolicy(SPPolicySell);
 					this.SPPolicyState = 2;
 				}else{
-					if(battery <= SPPolicyMiddleThreshold)
+					if(battery <= batteryCapacity*SPPolicyMiddleThreshold)
 					{
 						this.towardsBattery.setSPPolicy(SPPolicyKeep);
 						this.SPPolicyState = 0;
@@ -283,12 +289,12 @@ public class Controller extends AbstractComponent implements LaunchableOfferedI{
 				
 				break;
 			case 2:
-				if(battery <= SPPolicyMiddleThreshold)
+				if(battery <= batteryCapacity*SPPolicyMiddleThreshold)
 				{
 					this.towardsBattery.setSPPolicy(SPPolicyKeep);
 					this.SPPolicyState = 0;
 				}else{
-					if(battery <= SPPolicySellThreshold)
+					if(battery <= batteryCapacity*SPPolicySellThreshold)
 					{
 						this.towardsBattery.setSPPolicy(SPPolicyMiddle);
 						this.SPPolicyState = 1;

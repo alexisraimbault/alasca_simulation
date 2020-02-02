@@ -97,6 +97,17 @@ public class BatteryIbp extends AbstractInboundPort implements BatteryOfferedI{
 					}
 				}) ;
 	}
+
+	@Override
+	public double getStorageCapacity() throws Exception {
+		return this.owner.handleRequestSync(
+				new AbstractComponent.AbstractService<Double>() {
+					@Override
+					public Double call() throws Exception {
+						return ((Battery)this.getServiceOwner()).getStorageCapacity() ;
+					}
+				}) ;
+	}
 }
 
 
